@@ -14,7 +14,8 @@ public class Location {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String address;
+    private String district;
     private String city;
+    private String country;
 
 }

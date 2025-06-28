@@ -1,14 +1,12 @@
 package com.binh.carbooking.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 
 public class Rental {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy =  GenerationType.AUTO)
     private String licensePlate;
 
     @ManyToOne
@@ -24,5 +22,6 @@ public class Rental {
     private BigDecimal price;
     private String location;
     private String status;
+    private String status_accept;
 
 }
