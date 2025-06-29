@@ -2,10 +2,10 @@ package com.binh.carbooking.services.inf;
 
 import com.binh.carbooking.dto.request.LoginRequestDto;
 import com.binh.carbooking.dto.response.AuthUserResponseDto;
-import com.binh.carbooking.dto.response.JwtReponse;
+import com.binh.carbooking.dto.response.JwtResponse;
 
 public interface IJwtAuthenticationService {
-   JwtReponse  authenticationAccount(LoginRequestDto loginRequestDto);
+   JwtResponse authenticationAccount(LoginRequestDto loginRequestDto);
    AuthUserResponseDto authRequestHeader(String token);
 
 }
