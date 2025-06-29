@@ -1,11 +1,13 @@
 package com.binh.carbooking.entities;
 
+import com.binh.carbooking.entities.enums.EGender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -19,6 +21,10 @@ public class User {
     private Long id;
     @Column(length = 100, nullable = false)
     private String fullName;
+    @Enumerated(EnumType.STRING)
+    private EGender gender;
+    @Column(name="day_of_birth")
+    private Date dayOfBirth;
     @Email
     @Column(name = "email", length = 50, unique = true)
     private String email;
@@ -26,7 +32,7 @@ public class User {
     private String password;
     @Column(name = "phone", length = 20, unique = true)
     private String phone;
-
+    private String address;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private Role role;
