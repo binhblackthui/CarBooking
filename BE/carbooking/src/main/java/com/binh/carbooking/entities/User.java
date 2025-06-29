@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Setter
 @Getter
+@Setter
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

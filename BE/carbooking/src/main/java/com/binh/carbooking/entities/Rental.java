@@ -40,7 +40,5 @@ public class Rental {
     @OneToMany(mappedBy = "rental")
     private List<Image> images;
     @OneToMany(mappedBy = "rental")
-    private List<Comment> comments;
-    @OneToMany(mappedBy = "rental")
     private List<Booking> bookings; // Thêm mối quan hệ ngược với Booking
 }

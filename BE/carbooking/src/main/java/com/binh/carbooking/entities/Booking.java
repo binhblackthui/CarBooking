@@ -38,4 +38,9 @@ public class Booking {
     private EBookingStatus status;
     @Column(name = "create_at")
     private LocalDateTime createdAt;
+
+    @OneToOne(mappedBy = "booking") // Thêm mối quan hệ ngược
+    private Comment comment;
+    @OneToOne(mappedBy = "booking")
+    private Payment payment;
 }
