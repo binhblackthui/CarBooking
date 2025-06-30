@@ -1,10 +1,10 @@
 package com.binh.carbooking.controllers;
 
-import com.binh.carbooking.dto.request.LoginRequest;
-import com.binh.carbooking.dto.request.RegisterRequest;
-import com.binh.carbooking.dto.response.JwtResponse;
+import com.binh.carbooking.dto.request.LoginRequestDto;
+import com.binh.carbooking.dto.request.RegisterRequestDto;
+import com.binh.carbooking.dto.response.JwtResponseDto;
 
-import com.binh.carbooking.dto.response.UserResponse;
+import com.binh.carbooking.dto.response.UserResponseDto;
 import com.binh.carbooking.services.inf.IJwtAuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final IJwtAuthenticationService jwtAuthenticationService;
     @PostMapping("/login")
-    public JwtResponse authenticationAccount(@Valid @RequestBody LoginRequest loginRequest) {
-        return jwtAuthenticationService.authenticationAccount(loginRequest);
+    public JwtResponseDto authenticationAccount(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+        return jwtAuthenticationService.authenticationAccount(loginRequestDto);
     }
     @PostMapping("/register")
-    public UserResponse registerAccount(@Valid @RequestBody RegisterRequest registerRequest){
-        return jwtAuthenticationService.registerAccount(registerRequest);
+    public UserResponseDto registerAccount(@Valid @RequestBody RegisterRequestDto registerRequestDto){
+        return jwtAuthenticationService.registerAccount(registerRequestDto);
     }
 
 }

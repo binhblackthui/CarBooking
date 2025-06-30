@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class ErrorResponse {
+public class ErrorResponseDto {
     int statusCode;
     String message;
     String description;
@@ -19,7 +19,7 @@ public class ErrorResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     Map<String, String> validationErrors;
 
-    public ErrorResponse(int statusCode, String message, String description, ZonedDateTime timestamp) {
+    public ErrorResponseDto(int statusCode, String message, String description, ZonedDateTime timestamp) {
         this.statusCode = statusCode;
         this.message = message;
         this.description = description;

@@ -15,7 +15,7 @@ import java.util.Date;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class RegisterRequest {
+public class RegisterRequestDto {
     @NotBlank(message = "fullName is require")
     String fullName;
     @NotBlank(message = "gener is require")

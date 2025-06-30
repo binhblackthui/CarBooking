@@ -1,6 +1,6 @@
 package com.binh.carbooking.exceptions.handlers;
 
-import com.binh.carbooking.dto.response.ErrorResponse;
+import com.binh.carbooking.dto.response.ErrorResponseDto;
 import com.binh.carbooking.exceptions.DuplicateValueInResourceException;
 import com.binh.carbooking.exceptions.ResourceNotFoundException;
 import com.binh.carbooking.exceptions.ValidationException;
@@ -24,36 +24,36 @@ import java.util.stream.Collectors;
 public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ResourceNotFoundException.class})
-    protected ResponseEntity<ErrorResponse> handleResourceNotFoundException(RuntimeException exception) {
-        ErrorResponse error = new ErrorResponse(
+    protected ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(RuntimeException exception) {
+        ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.NOT_FOUND.value(),
                 "resource not found",
                 exception.getMessage().toString(),
                 ZonedDateTime.now()
         );
-        return new ResponseEntity<ErrorResponse>(error, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ErrorResponseDto>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({DuplicateValueInResourceException.class})
-    protected ResponseEntity<ErrorResponse> handleDuplicateValueInResource(RuntimeException exception) {
-        ErrorResponse error = new ErrorResponse(
+    protected ResponseEntity<ErrorResponseDto> handleDuplicateValueInResource(RuntimeException exception) {
+        ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
                 "resource was existed",
                 exception.getMessage().toString(),
                 ZonedDateTime.now()
         );
-        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponseDto>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ValidationException.class})
-    protected ResponseEntity<ErrorResponse> handleValidationException(RuntimeException exception, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(
+    protected ResponseEntity<ErrorResponseDto> handleValidationException(RuntimeException exception, WebRequest request) {
+        ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
                 "validation fail",
                 exception.getMessage().toString(),
                 ZonedDateTime.now()
         );
-        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorResponseDto>(error, HttpStatus.BAD_REQUEST);
     }
 
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -61,7 +61,7 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
         for(ObjectError error : ex.getBindingResult().getAllErrors()) {
             details.add(error.getDefaultMessage());
         }
-        ErrorResponse errorResponseDto = new ErrorResponse(
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
                 "validation fail",
                 details.stream().collect(Collectors.joining(", ")),

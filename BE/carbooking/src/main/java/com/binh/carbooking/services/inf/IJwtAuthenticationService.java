@@ -1,13 +1,12 @@
 package com.binh.carbooking.services.inf;
 
-import com.binh.carbooking.dto.request.LoginRequest;
-import com.binh.carbooking.dto.request.RegisterRequest;
-import com.binh.carbooking.dto.response.AuthUserResponseDto;
-import com.binh.carbooking.dto.response.JwtResponse;
-import com.binh.carbooking.dto.response.UserResponse;
+import com.binh.carbooking.dto.request.LoginRequestDto;
+import com.binh.carbooking.dto.request.RegisterRequestDto;
+import com.binh.carbooking.dto.response.JwtResponseDto;
+import com.binh.carbooking.dto.response.UserResponseDto;
 
 public interface IJwtAuthenticationService {
-   JwtResponse authenticationAccount(LoginRequest loginRequest);
+   JwtResponseDto authenticationAccount(LoginRequestDto loginRequestDto);
    //AuthUserResponseDto authRequestHeader(String token);
-   UserResponse registerAccount(RegisterRequest registerRequest);
+   UserResponseDto registerAccount(RegisterRequestDto registerRequestDto);
 }

@@ -11,7 +11,7 @@ import java.util.Date;
 @Setter
 @Getter
 @NoArgsConstructor
-public class UserResponse {
+public class UserResponseDto {
     private Long id;
     private String fullName;
     private EGender gender;

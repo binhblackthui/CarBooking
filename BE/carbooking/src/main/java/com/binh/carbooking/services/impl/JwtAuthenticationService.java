@@ -1,10 +1,9 @@
 package com.binh.carbooking.services.impl;
 
-import com.binh.carbooking.dto.request.LoginRequest;
-import com.binh.carbooking.dto.request.RegisterRequest;
-import com.binh.carbooking.dto.response.AuthUserResponseDto;
-import com.binh.carbooking.dto.response.JwtResponse;
-import com.binh.carbooking.dto.response.UserResponse;
+import com.binh.carbooking.dto.request.LoginRequestDto;
+import com.binh.carbooking.dto.request.RegisterRequestDto;
+import com.binh.carbooking.dto.response.JwtResponseDto;
+import com.binh.carbooking.dto.response.UserResponseDto;
 import com.binh.carbooking.entities.Role;
 import com.binh.carbooking.entities.User;
 import com.binh.carbooking.entities.enums.EGender;
@@ -38,35 +37,35 @@ public class JwtAuthenticationService implements IJwtAuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepo roleRepo;
     @Override
-    public JwtResponse authenticationAccount(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+    public JwtResponseDto authenticationAccount(LoginRequestDto loginRequestDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
         String jwt= JwtUtil.generateJwtToken(authentication);
         String username="binh@gmail.com";
         List<String> roles = userPrinciple.getAuthorities().stream().map(grantedAuthority -> grantedAuthority.getAuthority()).collect(Collectors.toList());
-        return new JwtResponse(HttpStatus.OK.value(),"login success",jwt,username,roles);
+        return new JwtResponseDto(HttpStatus.OK.value(),"login success",jwt,username,roles);
     }
 
     @Override
-    public UserResponse registerAccount(RegisterRequest registerRequest){
-        if(userRepo.findByEmail(registerRequest.getEmail())!=null)
+    public UserResponseDto registerAccount(RegisterRequestDto registerRequestDto){
+        if(userRepo.findByEmail(registerRequestDto.getEmail())!=null)
             throw new DuplicateValueInResourceException("account was existed by email");
-        if(!registerRequest.getPassword().equals(registerRequest.getConfirmPassword()))
+        if(!registerRequestDto.getPassword().equals(registerRequestDto.getConfirmPassword()))
             throw new ValidationException("confirm password not correct");
         User user = new User();
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // Mã hóa mật khẩu
-        user.setFullName(registerRequest.getFullName()); // Giả sử RegisterRequest có trường fullName
-        if(registerRequest.getGener().equals("MALE")) {
+        user.setEmail(registerRequestDto.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword())); // Mã hóa mật khẩu
+        user.setFullName(registerRequestDto.getFullName()); // Giả sử RegisterRequestDto có trường fullName
+        if(registerRequestDto.getGener().equals("MALE")) {
             user.setGender(EGender.MALE);
         }
         else {
             user.setGender(EGender.FEMALE);
         }
-        user.setDayOfBirth(registerRequest.getDayOfBirth());
-        user.setPhone(registerRequest.getPhone());
-        user.setAddress(registerRequest.getAddress());
+        user.setDayOfBirth(registerRequestDto.getDayOfBirth());
+        user.setPhone(registerRequestDto.getPhone());
+        user.setAddress(registerRequestDto.getAddress());
         user.setCreateAt(LocalDateTime.now());
         // Gán vai trò mặc định (ví dụ: ROLE_USER)
         Role role = roleRepo.findByRoleName(ERoleType.ROLE_USER);
@@ -75,21 +74,21 @@ public class JwtAuthenticationService implements IJwtAuthenticationService {
         // Lưu user vào cơ sở dữ liệu
         User savedUser = userRepo.save(user);
 
-        // Tạo UserResponse
-        UserResponse userResponse = new UserResponse();
+        // Tạo UserResponseDto
+        UserResponseDto userResponseDto = new UserResponseDto();
 
-        userResponse.setId(savedUser.getId());
-        userResponse.setEmail(savedUser.getEmail());
-        userResponse.setFullName(savedUser.getFullName());
-        userResponse.setGender(savedUser.getGender());
-        userResponse.setDayOfBirth(savedUser.getDayOfBirth());
-        userResponse.setPhone(savedUser.getPhone());
-        userResponse.setAddress(savedUser.getAddress());
-        userResponse.setCreateAt(savedUser.getCreateAt());
+        userResponseDto.setId(savedUser.getId());
+        userResponseDto.setEmail(savedUser.getEmail());
+        userResponseDto.setFullName(savedUser.getFullName());
+        userResponseDto.setGender(savedUser.getGender());
+        userResponseDto.setDayOfBirth(savedUser.getDayOfBirth());
+        userResponseDto.setPhone(savedUser.getPhone());
+        userResponseDto.setAddress(savedUser.getAddress());
+        userResponseDto.setCreateAt(savedUser.getCreateAt());
 
 
 
-        return userResponse;
+        return userResponseDto;
     }
 
 }

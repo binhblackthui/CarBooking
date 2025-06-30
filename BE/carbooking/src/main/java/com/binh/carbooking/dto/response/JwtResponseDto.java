@@ -7,13 +7,13 @@ import java.util.List;
 
 @Getter
 @Setter
-public class JwtResponse {
+public class JwtResponseDto {
     int statusCode;
     String message;
     String accessToken;
     String username;
     List<String> roles;
-    public JwtResponse(int statusCode, String message, String accessToken, String username, List<String> roles){
+    public JwtResponseDto(int statusCode, String message, String accessToken, String username, List<String> roles){
         this.statusCode = statusCode;
         this.message = message;
         this.accessToken = accessToken;
