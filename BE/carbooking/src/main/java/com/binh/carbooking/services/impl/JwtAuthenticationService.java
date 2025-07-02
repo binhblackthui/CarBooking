@@ -2,8 +2,10 @@ package com.binh.carbooking.services.impl;
 
 import com.binh.carbooking.dto.request.LoginRequestDto;
 import com.binh.carbooking.dto.request.RegisterRequestDto;
+import com.binh.carbooking.dto.response.AuthUserResponseDto;
 import com.binh.carbooking.dto.response.JwtResponseDto;
 import com.binh.carbooking.dto.response.UserResponseDto;
+import com.binh.carbooking.entities.Admin;
 import com.binh.carbooking.entities.Role;
 import com.binh.carbooking.entities.User;
 import com.binh.carbooking.entities.enums.EGender;
@@ -12,10 +14,12 @@ import com.binh.carbooking.exceptions.DuplicateValueInResourceException;
 import com.binh.carbooking.exceptions.ValidationException;
 import com.binh.carbooking.filters.jwt.JwtUtil;
 import com.binh.carbooking.filters.userprincal.UserPrinciple;
+import com.binh.carbooking.repository.AdminRepo;
 import com.binh.carbooking.repository.RoleRepo;
 import com.binh.carbooking.repository.UserRepo;
 import com.binh.carbooking.services.inf.IJwtAuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.jaxb.mapping.JaxbQueryHint;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +41,7 @@ public class JwtAuthenticationService implements IJwtAuthenticationService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepo roleRepo;
+    private final AdminRepo adminRepo;
     @Override
     public JwtResponseDto authenticationAccount(LoginRequestDto loginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
@@ -89,6 +95,38 @@ public class JwtAuthenticationService implements IJwtAuthenticationService {
 
 
         return userResponseDto;
+    }
+
+    @Override
+    public AuthUserResponseDto authRequestHeader(String token)
+    {
+        if(JwtUtil.getRoleByToken(token).equals("ROLE_USER")){
+            User user =userRepo.findByEmail(JwtUtil.getUsernameByToken((token)));
+            return new AuthUserResponseDto(
+                    200,
+                    user.getId(),
+                    user.getFullName(),
+                    "ROLE_USER",
+                    user.getGender().toString(),
+                    user.getDayOfBirth(),
+                    user.getPhone(),
+                    user.getEmail(),
+                    user.getAddress()
+            );
+        }
+        else {
+            Admin admin = adminRepo.findByAdminName(JwtUtil.getUsernameByToken(token));
+            return new AuthUserResponseDto(
+                    200,
+                    admin.getAdminId(),
+                    admin.getAdminName(),
+                    "ROLE_ADMIN",
+                    "",
+                    null,
+                    "",
+                    "",""
+            );
+        }
     }
 
 }

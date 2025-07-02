@@ -2,6 +2,7 @@ package com.binh.carbooking.controllers;
 
 import com.binh.carbooking.dto.request.LoginRequestDto;
 import com.binh.carbooking.dto.request.RegisterRequestDto;
+import com.binh.carbooking.dto.response.AuthUserResponseDto;
 import com.binh.carbooking.dto.response.JwtResponseDto;
 
 import com.binh.carbooking.dto.response.UserResponseDto;
@@ -23,6 +24,10 @@ public class AuthController {
     @PostMapping("/register")
     public UserResponseDto registerAccount(@Valid @RequestBody RegisterRequestDto registerRequestDto){
         return jwtAuthenticationService.registerAccount(registerRequestDto);
+    }
+    @GetMapping
+    public AuthUserResponseDto authUserResponseDto(@RequestHeader (name = "Authorization") String requestHeader){
+        return jwtAuthenticationService.authRequestHeader(requestHeader);
     }
 
 }
