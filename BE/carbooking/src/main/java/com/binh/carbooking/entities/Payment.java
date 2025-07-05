@@ -18,7 +18,7 @@ public class Payment {
     @Column(name = "id", nullable = false)
     private Long id;
     @OneToOne
-    @JoinColumn(name = "booking_id",referencedColumnName = "id")
+    @JoinColumn(name = "booking_id")
     private Booking booking;
     @Column(nullable = false)
     private int total;

@@ -2,12 +2,14 @@ package com.binh.carbooking.entities;
 
 import com.binh.carbooking.entities.enums.ERoleType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Setter
 @Getter
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

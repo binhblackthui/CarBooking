@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
-    private IUserService userService;
+    private final IUserService userService;
 
     @GetMapping("/{id}")
     UserResponseDto getUser(@PathVariable Long id){return userService.findUserById(id); }

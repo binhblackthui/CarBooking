@@ -13,7 +13,7 @@ import java.util.Date;
 public class UserRequestDto {
 
     @NotBlank(message = "fullName is require")
-    private String lastName;
+    private String fullName;
     @NotBlank(message = "phone is require")
     private String phone;
     @Email

@@ -23,7 +23,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
-        if(request.getServletPath().equals("/v1/login")){
+        String path = request.getServletPath();
+        if(request.getServletPath().equals("/api/v1/auth/login")){
             filterChain.doFilter(request,response);
         }
         else{

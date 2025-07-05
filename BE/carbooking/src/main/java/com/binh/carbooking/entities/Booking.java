@@ -20,7 +20,7 @@ public class Booking {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "license_plate", referencedColumnName = "license_plate")
+    @JoinColumn(name = "license_plate_id", referencedColumnName = "license_plate")
     private  Rental rental;
 
     @ManyToOne

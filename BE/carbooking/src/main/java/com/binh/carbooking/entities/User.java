@@ -33,7 +33,7 @@ public class User {
     @Column(name = "phone", length = 20, unique = true)
     private String phone;
     private String address;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private Role role;
 
