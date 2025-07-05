@@ -19,7 +19,6 @@ public class UserDetailService implements UserDetailsService {
     private final UserRepo userRepo;
     private final AdminRepo adminRepo;
 
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

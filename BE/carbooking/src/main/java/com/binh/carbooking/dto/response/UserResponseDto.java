@@ -20,7 +20,4 @@ public class UserResponseDto {
     private String address;
     private String email;
     private LocalDateTime createAt;
-
-
-
 }

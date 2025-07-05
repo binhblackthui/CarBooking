@@ -48,9 +48,9 @@ public class JwtAuthenticationService implements IJwtAuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
         String jwt= JwtUtil.generateJwtToken(authentication);
-        String username="binh@gmail.com";
+
         List<String> roles = userPrinciple.getAuthorities().stream().map(grantedAuthority -> grantedAuthority.getAuthority()).collect(Collectors.toList());
-        return new JwtResponseDto(HttpStatus.OK.value(),"login success",jwt,username,roles);
+        return new JwtResponseDto(HttpStatus.OK.value(),"login success",jwt,userPrinciple.getUsername(),roles);
     }
 
     @Override
