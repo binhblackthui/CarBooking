@@ -14,7 +14,7 @@ public interface IUserService {
 
     UserResponseDto findUserById(Long id);
 
-    List<UserResponseDto> findListUser(int page,int size);
+    List<UserResponseDto> findUserList(int page, int size);
 
     boolean isExistUser(UserRequestDto userRequestDto);
 

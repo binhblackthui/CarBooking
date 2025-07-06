@@ -14,6 +14,8 @@ import com.binh.carbooking.repository.UserRepo;
 import com.binh.carbooking.services.inf.IUserService;
 import com.binh.carbooking.utils.EmailUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -70,8 +73,16 @@ public class UserService implements IUserService {
         return modelMaper.map(user,UserResponseDto.class);
     }
     @Override
-    public List<UserResponseDto> findListUser(int page, int size){
-        return null;
+    public List<UserResponseDto> findUserList(int page, int size){
+        try{
+            Pageable pageable = PageRequest.of(page,size);
+            return userRepo.findAll(pageable)
+                    .stream()
+                    .map(user -> modelMaper.map(user,UserResponseDto.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new ResourceFoundException(e.getMessage());
+        }
     }
     @Override
     public boolean isExistUser(UserRequestDto userRequestDto){
