@@ -13,12 +13,20 @@ public class Comment {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne // Thay @OneToOne để đảm bảo tính linh hoạt
+    @ManyToOne
+    @JoinColumn(name = "car_id",referencedColumnName = "license_plate")
+    private Car car;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private User user;
+
+    @OneToOne
     @JoinColumn(name = "booking_id", referencedColumnName = "id", nullable = false)
-    private Booking booking; // Thêm mối quan hệ đến Booking
+    private Booking booking;
 
     @Column(name = "star", nullable = false)
-    private int star; // Sửa lỗi chính tả từ "start" thành "star"
+    private int star;
 
     @Column(nullable = false)
     private String feedback;

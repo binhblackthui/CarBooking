@@ -40,8 +40,8 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createAt;
 
-    @OneToMany(mappedBy = "user") // Sửa lại để ánh xạ ngược với Rental
-    private List<Rental> rentals;
+    @OneToMany(mappedBy = "user") // Sửa lại để ánh xạ ngược với Car
+    private List<Car> cars;
 
     @OneToMany(mappedBy = "user") // Sửa lại để ánh xạ ngược với Booking
     private List<Booking> bookings;

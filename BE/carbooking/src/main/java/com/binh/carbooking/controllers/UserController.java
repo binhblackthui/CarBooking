@@ -1,8 +1,10 @@
 package com.binh.carbooking.controllers;
 
 import com.binh.carbooking.dto.request.UserRequestDto;
+import com.binh.carbooking.dto.response.CarResponseDto;
 import com.binh.carbooking.dto.response.DeleteResponseDto;
 import com.binh.carbooking.dto.response.UserResponseDto;
+import com.binh.carbooking.services.inf.ICarService;
 import com.binh.carbooking.services.inf.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final IUserService userService;
+    private final ICarService carService;
 
     @GetMapping("/{id}")
     UserResponseDto getUser(@PathVariable Long id){return userService.findUserById(id); }
@@ -35,4 +38,10 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     DeleteResponseDto deleteUser(@PathVariable Long id){ return userService.deleteUserService(id); }
+
+    @GetMapping("{id}/Cars")
+    List<CarResponseDto> getListCarByUser(@PathVariable Long id, @RequestParam("page") int page, @RequestParam("size") int size){
+        return carService.getListCarByUser(id,page,size);
+    }
+
 }

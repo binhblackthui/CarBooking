@@ -21,7 +21,7 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "license_plate_id", referencedColumnName = "license_plate")
-    private  Rental rental;
+    private Car car;
 
     @ManyToOne
     @JoinColumn(name = "pickup_location_id", referencedColumnName = "id")
@@ -39,8 +39,6 @@ public class Booking {
     @Column(name = "create_at")
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "booking") // Thêm mối quan hệ ngược
-    private Comment comment;
     @OneToOne(mappedBy = "booking")
     private Payment payment;
 }

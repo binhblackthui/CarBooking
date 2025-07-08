@@ -15,7 +15,7 @@ public class Image {
     private Long ImageId;
     @ManyToOne
     @JoinColumn(name = "license_plate", referencedColumnName = "license_plate")
-    private Rental rental;
+    private Car car;
     @Column(name = "image_url", nullable = false)
     private String imageURL;
 

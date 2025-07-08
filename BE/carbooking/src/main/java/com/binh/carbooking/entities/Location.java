@@ -25,6 +25,6 @@ public class Location {
     private String country;
 
     @OneToMany(mappedBy = "location")
-    private List<Rental> rentals;
+    private List<Car> cars;
 
 }
