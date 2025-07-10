@@ -3,8 +3,8 @@ package com.binh.carbooking.dto.response;
 import com.binh.carbooking.dto.request.CarDetailRequestDto;
 import com.binh.carbooking.dto.request.ImageRequestDto;
 import com.binh.carbooking.entities.*;
-import com.binh.carbooking.entities.enums.EModerationStatus;
-import com.binh.carbooking.entities.enums.ERentalStatus;
+import com.binh.carbooking.entities.enums.ECensorshipStatus;
+import com.binh.carbooking.entities.enums.ECarStatus;
 import lombok.*;
 
 
@@ -24,8 +24,8 @@ public class CarResponseDto {
     private int year;
     private BigDecimal price;
     private Location location;
-    private EModerationStatus moderation;
-    private ERentalStatus status;
+    private ECensorshipStatus censorshipStatus;
+    private ECarStatus status;
     private LocalDateTime createdAt;
     private List<ImageRequestDto> images;
     private int start;

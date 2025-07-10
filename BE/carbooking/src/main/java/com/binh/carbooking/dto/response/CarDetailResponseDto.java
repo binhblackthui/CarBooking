@@ -1,6 +1,7 @@
 package com.binh.carbooking.dto.response;
 
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,4 +14,6 @@ public class CarDetailResponseDto {
     private String category;
     private String transmission;
     private String fuelType;
+    private String color;
+    private int seat;
 }

@@ -20,4 +20,6 @@ public class CarDetail {
     private String transmission;
     @Column(name ="fuel_type")
     private String fuelType;
+    private String color;
+    private int seat;
 }

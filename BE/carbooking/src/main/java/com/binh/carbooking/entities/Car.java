@@ -1,7 +1,7 @@
 package com.binh.carbooking.entities;
 
-import com.binh.carbooking.entities.enums.EModerationStatus;
-import com.binh.carbooking.entities.enums.ERentalStatus;
+import com.binh.carbooking.entities.enums.ECensorshipStatus;
+import com.binh.carbooking.entities.enums.ECarStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,9 +35,9 @@ public class Car {
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
     @Enumerated(EnumType.STRING)
-    private EModerationStatus moderation;
+    private ECensorshipStatus censorshipStatus;
     @Enumerated(EnumType.STRING)
-    private ERentalStatus status;
+    private ECarStatus status;
     @Column(name = "create_at")
     private LocalDateTime createdAt;
 

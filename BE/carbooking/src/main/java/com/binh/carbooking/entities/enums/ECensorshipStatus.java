@@ -1,6 +1,6 @@
 package com.binh.carbooking.entities.enums;
 
-public enum EModerationStatus {
+public enum ECensorshipStatus {
     ACCEPT,
     NOT_ACCEPT
 }

@@ -27,7 +27,7 @@ public class CarMapper {
                 .price(car.getPrice())
                 .year(car.getYear())
                 .location(car.getLocation())
-                .moderation(car.getModeration())
+                .censorshipStatus(car.getCensorshipStatus())
                 .status(car.getStatus())
                 .createdAt(car.getCreatedAt())
                 .images(car.getImages().stream().map(image -> modelMapper.map(image, ImageRequestDto.class)).collect(Collectors.toList()))
@@ -35,3 +35,4 @@ public class CarMapper {
                 .build();
     }
 }
+

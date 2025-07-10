@@ -1,6 +1,6 @@
 package com.binh.carbooking.entities.enums;
 
-public enum ERentalStatus {
+public enum ECarStatus {
     AVAILABLE,
     NOT_AVAILABLE,
     BOOKED
