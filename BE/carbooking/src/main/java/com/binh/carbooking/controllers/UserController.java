@@ -1,9 +1,11 @@
 package com.binh.carbooking.controllers;
 
 import com.binh.carbooking.dto.request.UserRequestDto;
+import com.binh.carbooking.dto.response.BookingResponseDto;
 import com.binh.carbooking.dto.response.CarResponseDto;
 import com.binh.carbooking.dto.response.DeleteResponseDto;
 import com.binh.carbooking.dto.response.UserResponseDto;
+import com.binh.carbooking.services.inf.IBookingService;
 import com.binh.carbooking.services.inf.ICarService;
 import com.binh.carbooking.services.inf.IUserService;
 import jakarta.validation.Valid;
@@ -19,7 +21,7 @@ import java.util.List;
 public class UserController {
     private final IUserService userService;
     private final ICarService carService;
-
+    private final IBookingService bookingService;
     @GetMapping("/{id}")
     UserResponseDto getUser(@PathVariable Long id){return userService.findUserById(id); }
 
@@ -42,5 +44,10 @@ public class UserController {
     @GetMapping("/{id}/cars")
     List<CarResponseDto> getListCarByUser(@PathVariable Long id, @RequestParam("page") int page, @RequestParam("size") int size){
         return carService.getListCarByUser(id,page,size);
+    }
+
+    @GetMapping("/{id}/bookings")
+    List<BookingResponseDto> getListBookingByUser(@PathVariable Long id, @RequestParam("page") int page, @RequestParam("size") int size){
+        return bookingService.getListBookingByUser(id,page,size);
     }
 }
