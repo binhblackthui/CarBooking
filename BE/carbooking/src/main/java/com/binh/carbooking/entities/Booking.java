@@ -2,13 +2,16 @@ package com.binh.carbooking.entities;
 
 import com.binh.carbooking.entities.enums.EBookingStatus;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
+@Builder
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +23,7 @@ public class Booking {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "license_plate_id", referencedColumnName = "license_plate")
+    @JoinColumn(name = "car_id", referencedColumnName = "id")
     private Car car;
 
     @ManyToOne
@@ -31,12 +34,12 @@ public class Booking {
     @JoinColumn(name = "return_location_id", referencedColumnName = "id")
     private Location returnLocation;
     @Column(name = "pickup_time")
-    private LocalDateTime pickupTime;
+    private LocalDate pickupTime;
     @Column(name = "return_time")
-    private LocalDateTime returnTime;
+    private LocalDate returnTime;
     @Enumerated(EnumType.STRING)
     private EBookingStatus status;
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @OneToOne(mappedBy = "booking")

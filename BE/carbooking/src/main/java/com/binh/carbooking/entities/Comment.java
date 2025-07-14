@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Setter
 @Getter
@@ -13,21 +15,26 @@ public class Comment {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "car_id",referencedColumnName = "license_plate")
-    private Car car;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
-    private User user;
-
-    @OneToOne
-    @JoinColumn(name = "booking_id", referencedColumnName = "id", nullable = false)
-    private Booking booking;
 
     @Column(name = "star", nullable = false)
     private int star;
 
     @Column(nullable = false)
     private String feedback;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_id",referencedColumnName = "id")
+    private Car car;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private User user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", referencedColumnName = "id", nullable = false)
+    private Booking booking;
 }

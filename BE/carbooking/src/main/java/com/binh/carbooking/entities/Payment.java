@@ -28,5 +28,4 @@ public class Payment {
     private EPaymentMethod method;
     @Enumerated(EnumType.STRING)
     private EPaymentStatus status;
-
 }

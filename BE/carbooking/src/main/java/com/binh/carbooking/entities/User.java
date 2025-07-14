@@ -38,7 +38,7 @@ public class User {
     private Role role;
 
     @Column(name = "created_at")
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user") // Sửa lại để ánh xạ ngược với Car
     private List<Car> cars;

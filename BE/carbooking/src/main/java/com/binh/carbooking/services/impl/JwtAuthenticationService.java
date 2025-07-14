@@ -19,7 +19,6 @@ import com.binh.carbooking.repository.RoleRepo;
 import com.binh.carbooking.repository.UserRepo;
 import com.binh.carbooking.services.inf.IJwtAuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.jaxb.mapping.JaxbQueryHint;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +28,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +70,7 @@ public class JwtAuthenticationService implements IJwtAuthenticationService {
         user.setDayOfBirth(registerRequestDto.getDayOfBirth());
         user.setPhone(registerRequestDto.getPhone());
         user.setAddress(registerRequestDto.getAddress());
-        user.setCreateAt(LocalDateTime.now());
+        user.setCreatedAt(LocalDateTime.now());
         // Gán vai trò mặc định (ví dụ: ROLE_USER)
         Role role = roleRepo.findByRoleName(ERoleType.ROLE_USER);
         user.setRole(role);
@@ -90,7 +88,7 @@ public class JwtAuthenticationService implements IJwtAuthenticationService {
         userResponseDto.setDayOfBirth(savedUser.getDayOfBirth());
         userResponseDto.setPhone(savedUser.getPhone());
         userResponseDto.setAddress(savedUser.getAddress());
-        userResponseDto.setCreateAt(savedUser.getCreateAt());
+        userResponseDto.setCreateAt(savedUser.getCreatedAt());
 
 
 

@@ -12,6 +12,7 @@ import java.util.List;
 
 @Repository
 public interface CarRepo extends JpaRepository<Car,Long> {
+    Car findCarByLicensePlate(String licensePlate);
     @Query(value = "SELECT * FROM car WHERE user_id = :userId ORDER BY create_at DESC", nativeQuery = true)
     List<Car> getListCarByUser(@Param("userId") Long customerId, Pageable pageable);
 

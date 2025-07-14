@@ -12,11 +12,14 @@ import java.util.List;
 @Getter
 @Setter
 public class CarRequestDto {
-    private String licensePlate;
+
     private Long userId;
-    private Long carId;
+    private Long carDetailId;
+    private String licensePlate;
     private int year;
     private BigDecimal price;
     private Long location;
+    private String description;
+    private String features;
     List<ImageRequestDto> imageRequestDtos;
 }

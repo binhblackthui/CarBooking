@@ -45,7 +45,7 @@ public class UserService implements IUserService {
                 user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
                 Role role = roleRepo.findByRoleName(ERoleType.ROLE_USER);
                 user.setRole(role);
-                user.setCreateAt(LocalDateTime.now());
+                user.setCreatedAt(LocalDateTime.now());
                 return modelMaper.map(userRepo.save(user),UserResponseDto.class);
             }
 

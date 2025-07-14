@@ -24,7 +24,4 @@ public class Location {
     @Column(nullable = false)
     private String country;
 
-    @OneToMany(mappedBy = "location")
-    private List<Car> cars;
-
 }
