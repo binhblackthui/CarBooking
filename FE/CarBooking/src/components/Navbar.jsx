@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { assets, menuLinks } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-const Navbar = (setShowLogin) => {
+const Navbar = ({ setShowLogin }) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -51,16 +51,7 @@ const Navbar = (setShowLogin) => {
           </button>
           <button
             onClick={() => setShowLogin(true)}
-            className="cursor-pointer px-8 py-2 text-white rounded-lg transition-all"
-            style={{
-              backgroundColor: "var(--color-primary)",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "var(--color-primary-dull)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "var(--color-primary)";
-            }}
+            className="cursor-pointer px-8 py-2 text-white bg-primary hover:bg-primary-dull rounded-lg transition-all"
           >
             Login
           </button>

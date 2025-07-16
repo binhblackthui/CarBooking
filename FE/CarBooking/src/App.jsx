@@ -6,7 +6,7 @@ import CarDetails from "./pages/CarDetails";
 import MyBookings from "./pages/MyBookings";
 import Cars from "./pages/Cars";
 import Login from "./components/Login";
-
+import Footer from "./components/Footer";
 const App = () => {
   const [showLogin, setShowLogin] = React.useState(false);
   const isOwnerPath = useLocation().pathname.startsWith("/owner");
@@ -20,6 +20,7 @@ const App = () => {
         <Route path="/cars" element={<Cars />} />
         <Route path="/my-bookings" element={<MyBookings />} />
       </Routes>
+      <Footer />
     </>
   );
 };
