@@ -1,7 +1,6 @@
 import React from "react";
 import { assets, cityList } from "../assets/assets";
-
-function Hero() {
+const Hero = () => {
   const [pickupLocation, setPickupLocation] = React.useState("");
 
   return (
@@ -76,6 +75,6 @@ function Hero() {
       <img src={assets.main_car} alt="car" className="max-h-74" />
     </div>
   );
-}
+};
 
 export default Hero;

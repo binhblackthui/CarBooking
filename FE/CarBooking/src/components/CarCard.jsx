@@ -1,10 +1,10 @@
 import React from "react";
 import { assets } from "../assets/assets";
 
-function CarCard({ car }) {
+const CarCard = ({ car }) => {
   const currency = import.meta.env.VITE_CURRENCY;
   return (
-    <div className="group rounded-x1 overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-500 cursor-pointer">
+    <div className="group rounded-xl overflow-hidden shadow-lg hover:-translate-y-1 transition-all duration-500 cursor-pointer">
       <div className="relative h-48 overflow-hidden">
         <img
           src={car.image}
@@ -59,6 +59,6 @@ function CarCard({ car }) {
       </div>
     </div>
   );
-}
+};
 
 export default CarCard;
