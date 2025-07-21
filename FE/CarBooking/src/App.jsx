@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import CarDetails from "./pages/CarDetails";
 import MyBookings from "./pages/MyBookings";
 import Cars from "./pages/Cars";
-import Login from "./components/Login";
+import Login from "./pages/Login"; // Updated import for the new login page
 import Footer from "./components/Footer";
 import Layout from "./pages/owner/Layout";
 import Dashboard from "./pages/owner/Dashboard";
@@ -14,13 +14,14 @@ import ManageCars from "./pages/owner/ManageCars";
 import ManageBookings from "./pages/owner/ManageBookings";
 
 const App = () => {
-  const [showLogin, setShowLogin] = React.useState(false);
-  const isOwnerPath = useLocation().pathname.startsWith("/owner");
+  const pathname = useLocation().pathname;
+  const isOwnerPath =
+    pathname.startsWith("/owner") || pathname.startsWith("/login");
   return (
     <>
-      {showLogin && <Login setShowLogin={setShowLogin} />}
-      {!isOwnerPath && <Navbar setShowLogin={setShowLogin} />}
+      {!isOwnerPath && <Navbar />}
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/car-details/:id" element={<CarDetails />} />
         <Route path="/cars" element={<Cars />} />

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { assets, menuLinks } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-const Navbar = ({ setShowLogin }) => {
+const Navbar = () => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -15,7 +15,6 @@ const Navbar = ({ setShowLogin }) => {
       <Link to="/">
         <img src={assets.logo} alt="logo" className="h-8" />
       </Link>
-
       <div
         className={`max-sm:fixed max-sm:h-screen
                     max-sm:w-full max-sm:top-16 max-sm:border-t
@@ -50,7 +49,7 @@ const Navbar = ({ setShowLogin }) => {
             Dashboard
           </button>
           <button
-            onClick={() => setShowLogin(true)}
+            onClick={() => navigate("/login")}
             className="cursor-pointer px-8 py-2 text-white bg-primary hover:bg-primary-dull rounded-lg transition-all"
           >
             Login

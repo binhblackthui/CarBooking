@@ -68,7 +68,7 @@ const ManageCars = () => {
                 </td>
                 <td className="p-3">
                   <div className="flex items-center justify-center">
-                    <img src={assets.eye_icon} alt="" />
+                    <img src={assets.black_edit_icon} alt="" />
                     <img src={assets.delete_icon} alt="" />
                   </div>
                 </td>
