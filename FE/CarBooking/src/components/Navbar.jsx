@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { assets, menuLinks } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 const Navbar = () => {
   const location = useLocation();
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   return (
@@ -52,7 +54,7 @@ const Navbar = () => {
             onClick={() => navigate("/login")}
             className="cursor-pointer px-8 py-2 text-white bg-primary hover:bg-primary-dull rounded-lg transition-all"
           >
-            Login
+            {"Login"}
           </button>
         </div>
       </div>

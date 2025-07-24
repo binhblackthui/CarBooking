@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import CarDetails from "./pages/CarDetails";
 import MyBookings from "./pages/MyBookings";
 import Cars from "./pages/Cars";
-import Login from "./pages/Login"; // Updated import for the new login page
+import Login from "./pages/Login";
 import Footer from "./components/Footer";
 import Layout from "./pages/owner/Layout";
 import Dashboard from "./pages/owner/Dashboard";
