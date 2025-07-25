@@ -12,13 +12,14 @@ import Dashboard from "./pages/owner/Dashboard";
 import AddCar from "./pages/owner/AddCar";
 import ManageCars from "./pages/owner/ManageCars";
 import ManageBookings from "./pages/owner/ManageBookings";
-
+import { Toaster } from "react-hot-toast";
 const App = () => {
   const pathname = useLocation().pathname;
   const isOwnerPath =
     pathname.startsWith("/owner") || pathname.startsWith("/login");
   return (
     <>
+      <Toaster />
       {!isOwnerPath && <Navbar />}
       <Routes>
         <Route path="/login" element={<Login />} />

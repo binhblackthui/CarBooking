@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { assets, menuLinks } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Navbar = () => {
   const location = useLocation();
-
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { authState, logout } = useContext(AuthContext);
+
   return (
     <div
       className={`flex items-center justify-between px-6 md:px-16 lg:px-24
@@ -51,10 +53,12 @@ const Navbar = () => {
             Dashboard
           </button>
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => {
+              authState.user ? logout() : navigate("/login");
+            }}
             className="cursor-pointer px-8 py-2 text-white bg-primary hover:bg-primary-dull rounded-lg transition-all"
           >
-            {"Login"}
+            {authState.user ? "Logout" : "Login"}
           </button>
         </div>
       </div>

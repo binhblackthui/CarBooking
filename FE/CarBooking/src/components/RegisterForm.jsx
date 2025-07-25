@@ -1,18 +1,21 @@
 import React from "react";
-
+import { AuthContext } from "../contexts/AuthContext";
 const RegisterForm = ({ setState }) => {
+  const { register } = React.useContext(AuthContext);
   const [registerData, setRegisterData] = React.useState({
-    fullname: "",
+    fullName: "",
     gender: "",
-    birthdate: "",
+    dayOfBirth: "",
     phone: "",
-    email: "",
     address: "",
+    email: "",
     password: "",
     confirmPassword: "",
   });
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    console.log("Register data:", registerData);
     e.preventDefault();
+    await register(registerData);
   };
   return (
     <form
@@ -44,10 +47,10 @@ const RegisterForm = ({ setState }) => {
                 onChange={(e) =>
                   setRegisterData({
                     ...registerData,
-                    fullname: e.target.value,
+                    fullName: e.target.value,
                   })
                 }
-                value={registerData.fullname}
+                value={registerData.fullName}
                 placeholder="Enter your full name"
                 className="w-full px-4 py-3 border border-borderColor rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all duration-200 bg-gray-50 hover:bg-white"
                 type="text"
@@ -109,10 +112,10 @@ const RegisterForm = ({ setState }) => {
                 onChange={(e) =>
                   setRegisterData({
                     ...registerData,
-                    birthdate: e.target.value,
+                    dayOfBirth: e.target.value,
                   })
                 }
-                value={registerData.birthdate}
+                value={registerData.dayOfBirth}
                 className="w-full px-4 py-3 border border-borderColor rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all duration-200 bg-gray-50 hover:bg-white"
                 type="date"
                 required

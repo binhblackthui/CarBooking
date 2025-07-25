@@ -1,12 +1,17 @@
 import React from "react";
 import { assets } from "../assets/assets.js";
+import { AuthContext } from "../contexts/AuthContext";
+
 const LoginForm = ({ setState }) => {
   const [loginData, setLoginData] = React.useState({
     username: "",
     password: "",
   });
-  const handleSubmit = (e) => {
+  const { login } = React.useContext(AuthContext);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    await login(loginData);
   };
 
   return (

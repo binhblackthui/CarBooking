@@ -6,9 +6,10 @@ import Title from "../components/owner/Title";
 
 import LoginForm from "../components/LoginForm.jsx";
 import RegisterForm from "../components/RegisterForm.jsx";
+import { AuthContext } from "../contexts/AuthContext";
 const Login = () => {
   const [state, setState] = useState("login");
-  const [loading, setLoading] = useState(false);
+  const { authState } = React.useContext(AuthContext);
 
   return (
     <div className="min-h-screen flex justify-center items-center p-4 ">
@@ -28,7 +29,7 @@ const Login = () => {
           </div>
         </div>
         <div className="w-full md:w-1/2 p-8 flex flex-col  justify-center overflow-y-auto ">
-          {loading ? (
+          {authState.loading ? (
             <Loader />
           ) : state === "login" ? (
             <LoginForm setState={setState} />

@@ -1,74 +1,83 @@
-import { useState, useEffect, createContext } from "react";
+import { useEffect, createContext, useReducer } from "react";
 import { authService } from "../services/authService.js";
+import authReducer, {
+  initialAuthState,
+  authActions,
+} from "../features/AuthSlice.js";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const authenticated = await authService.isAuthenticated();
-        setIsAuthenticated(authenticated);
-
-        if (authenticated) {
-          const currentUser = await authService.getCurrentUser();
-          setUser(currentUser);
-        }
-      } catch (error) {
-        console.error("Error checking authentication:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  const loginUser = async (userForm) => {
+  const navigate = useNavigate();
+  const login = async (loginForm) => {
+    dispatch(authActions.setLoading());
     try {
-      const response = await authService.login(userForm);
+      const response = await authService.login(loginForm);
+
+      if (response.statusCode === 200) {
+        toast.success("Login successful!");
+        navigate("/");
+      } else {
+        toast.error(response.message || "Login failed. Please try again.");
+      }
       return response;
     } catch (error) {
-      console.error("Login error:", error);
-      throw error;
+      toast.error(error.message || "Login failed. Please try again.");
     } finally {
       loadingUser();
     }
   };
-
   const loadingUser = async () => {
+    dispatch(authActions.setLoading());
     try {
-      const response = await authService.loadUser();
+      const user = await authService.loadUser();
+      dispatch(authActions.setAuth({ user }));
+      return user;
+    } catch (error) {
+      dispatch(authActions.setAuth({ user: null }));
+      throw error;
+    }
+  };
+  const register = async (userData) => {
+    dispatch(authActions.setLoading());
+    try {
+      const response = await authService.register(userData);
+      toast.success("Successful! Please log in.");
+      if (response.statusCode === 201) {
+        toast.success("Registration successful! Please log in.");
+      } else {
+        toast.error(
+          response.message || "Registration failed. Please try again."
+        );
+      }
+
       return response;
     } catch (error) {
-      console.error("Loading user error:", error);
+      toast.error("Registration failed. Please try again.");
+      throw error;
     } finally {
-      setLoading(false);
+      dispatch(authActions.setAuth({ user: null }));
     }
   };
-  const logoutUser = async () => {
-    try {
-      await authService.logout();
-      setIsAuthenticated(false);
-      setUser(null);
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      setLoading(false);
-    }
+  const logout = async () => {
+    await authService.logout();
+    dispatch(authActions.setLogout());
+    navigate("/");
   };
+
   useEffect(() => {
     loadingUser();
   }, []);
+
   const authContextData = {
-    isAuthenticated,
-    user,
-    loading,
-    loginUser,
-    logoutUser,
+    authState,
+    login,
     loadingUser,
+    register,
+    logout,
   };
   return (
     <AuthContext.Provider value={authContextData}>
