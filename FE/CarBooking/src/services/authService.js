@@ -10,8 +10,7 @@ export const authService = {
         return response.data;
         }
     catch (error) {
-     
-       throw  error.response.data ? error.response.data : {
+       throw error.response.data ? error.response.data : {
             status: 500,
             message: 'Internal server error',
         };

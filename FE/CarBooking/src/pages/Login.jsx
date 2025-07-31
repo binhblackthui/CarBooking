@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-
 import Loader from "../components/Loader.jsx";
 import { assets } from "../assets/assets.js";
 import Title from "../components/owner/Title";
-
 import LoginForm from "../components/LoginForm.jsx";
 import RegisterForm from "../components/RegisterForm.jsx";
 import { AuthContext } from "../contexts/AuthContext";

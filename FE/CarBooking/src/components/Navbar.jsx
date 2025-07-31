@@ -3,12 +3,16 @@ import { assets, menuLinks } from "../assets/assets";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { authState, logout } = useContext(AuthContext);
+  const {
+    authState: { user },
+    logout,
+  } = useContext(AuthContext);
 
   return (
     <div
@@ -49,16 +53,21 @@ const Navbar = () => {
           <img src={assets.search_icon} alt="search" />
         </div>
         <div className="flex max-sm:flex-col items-start sm:items-center gap-6">
-          <button className="cursor-pointer" onClick={() => navigate("/owner")}>
+          <button
+            className="cursor-pointer"
+            onClick={() =>
+              user ? navigate("/owner") : toast.error("Please login!")
+            }
+          >
             Dashboard
           </button>
           <button
             onClick={() => {
-              authState.user ? logout() : navigate("/login");
+              user ? logout() : navigate("/login");
             }}
             className="cursor-pointer px-8 py-2 text-white bg-primary hover:bg-primary-dull rounded-lg transition-all"
           >
-            {authState.user ? "Logout" : "Login"}
+            {user ? "Logout" : "Login"}
           </button>
         </div>
       </div>

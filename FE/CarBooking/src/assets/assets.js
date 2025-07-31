@@ -34,7 +34,8 @@ import testimonial_image_1 from "./testimonial_image_1.png"
 import testimonial_image_2 from "./testimonial_image_2.png"
 import main_car from "./main_car.png"
 import banner_car_image from "./banner_car_image.png"
-import user_profile from "./user_profile.png"
+import male_profile from "./male_profile.png"
+import female_profile from "./female_profile.jpg"
 import upload_icon from "./upload_icon.svg"
 import car_image1 from "./car_image1.png"
 import car_image2 from "./car_image2.png"
@@ -42,6 +43,9 @@ import car_image3 from "./car_image3.png"
 import car_image4 from "./car_image4.png"
 import black_edit_icon from "./black_edit_icon.svg"
 import lock_icon from "./lock_icon.svg";
+import car_up from "./car_up.svg";
+import car_down from "./car_down.svg";
+import ban_icon from "./ban_icon.svg";
 export const cityList = ['New York', 'Los Angeles', 'Houston', 'Chicago']
 
 export const assets = {
@@ -83,12 +87,16 @@ export const assets = {
     banner_car_image,
     car_image1,
     upload_icon,
-    user_profile,
+    male_profile,
+    female_profile,
     car_image2,
     car_image3,
     car_image4,
     black_edit_icon,
-    lock_icon
+    lock_icon,
+    car_up,
+    car_down,
+    ban_icon,
 }
 
 export const menuLinks = [
@@ -109,7 +117,7 @@ export const dummyUserData = {
   "name": "GreatStack",
   "email": "admin@example.com",
   "role": "owner",
-  "image": user_profile,
+  "image": male_profile,
 }
 
 export const dummyCarData = [

@@ -31,6 +31,7 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
   const loadingUser = async () => {
+    console.log("Loading user...");
     dispatch(authActions.setLoading());
     try {
       const user = await authService.loadUser();
@@ -38,7 +39,7 @@ export const AuthContextProvider = ({ children }) => {
       return user;
     } catch (error) {
       dispatch(authActions.setAuth({ user: null }));
-      throw error;
+      console.error("Failed to load user:", error.message);
     }
   };
   const register = async (userData) => {
@@ -46,14 +47,6 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const response = await authService.register(userData);
       toast.success("Successful! Please log in.");
-      if (response.statusCode === 201) {
-        toast.success("Registration successful! Please log in.");
-      } else {
-        toast.error(
-          response.message || "Registration failed. Please try again."
-        );
-      }
-
       return response;
     } catch (error) {
       toast.error("Registration failed. Please try again.");

@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 
-import { assets, dummyUserData, ownerMenuLinks } from "../../assets/assets";
+import { assets, ownerMenuLinks } from "../../assets/assets";
 import { NavLink, useLocation } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext.jsx";
 const SideBar = () => {
-  const user = dummyUserData;
+  const {
+    authState: { user },
+  } = useContext(AuthContext);
   const location = useLocation();
   const [image, setImage] = useState("");
   const updateImage = async () => {
@@ -16,10 +20,9 @@ const SideBar = () => {
         <label htmlFor="image">
           <img
             src={
-              image
-                ? URL.createObjectURL(image)
-                : user?.image ||
-                  "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&amp;w=300"
+              user?.gender === "MALE"
+                ? assets.male_profile
+                : assets.female_profile
             }
             alt=""
             className="h-20 w-20 rounded-full object-cover cursor-pointer"
@@ -47,7 +50,7 @@ const SideBar = () => {
           />
         </button>
       )}
-      <p className="mt-2 text-base max-md:hidden">{user.name}</p>
+      <p className="mt-2 text-base max-md:hidden">{user?.fullName}</p>
       <div className="w-full">
         {ownerMenuLinks.map((link, index) => (
           <NavLink

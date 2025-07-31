@@ -9,16 +9,37 @@ export const API_ENDPOINTS = {
     REGISTER: '/auth/register',
     AUTH: '/auth',
   },
-  
- 
-  
+  // Cars
+  CARS: {
+    GET_CARS: '/cars',
+    GET_CAR_OVERVIEW: '/cars/overview',
+    POST: '/cars',
+    
+  },
+  // Bookings
+  BOOKINGS:{
+    GET_BOOKINGS:'/bookings',
+    GET_BOOKING_OVERVIEW: '/bookings/overview',
+  },
+
   // Users
   USERS: {
-    PROFILE: '/users/profile',
-    UPDATE_PROFILE: '/users/profile',
-    GET_ALL: '/users',
+    GET_MY_CAR_SUMMARY: (userId) => `/users/${userId}/cars/summary`,
+  },
+
+  // Locations
+  LOCATIONS: {
+    GET_ALL: '/locations',
+  },
+
+
+  // Car Types
+  CAR_TYPES: {
+    GET_ALL: '/carDetail',
   },
 };
+// Locations
+
 
 // HTTP Status Codes
 export const HTTP_STATUS = {
