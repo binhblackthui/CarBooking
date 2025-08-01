@@ -49,9 +49,20 @@ public class CarDetailService implements ICarDetailService {
             throw new ResourceFoundException(e.getMessage());
         }
     }
+
     @Override
-    public  List<CarDetailResponseDto> getCarDetail(CarDetailRequestDto carDetailRequestDto){
-        return null;
+    public CarDetailResponseDto updateCarDetail(Long id,CarDetailRequestDto carDetailRequestDto){
+        try{
+            carDetailRepo.findById(id).ifPresent(carDetail -> {
+                modelMapper.map(carDetailRequestDto,carDetail);
+                carDetailRepo.save(carDetail);
+            });
+            return modelMapper.map(carDetailRequestDto, CarDetailResponseDto.class);
+        }
+        catch (Exception e){
+            throw new ResourceFoundException("update fail");
+        }
+
     }
     @Override
     public DeleteResponseDto deleteCarDetail(Long id){

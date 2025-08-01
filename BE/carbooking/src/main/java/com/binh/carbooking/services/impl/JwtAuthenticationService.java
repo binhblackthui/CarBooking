@@ -61,7 +61,7 @@ public class JwtAuthenticationService implements IJwtAuthenticationService {
         user.setEmail(registerRequestDto.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword())); // Mã hóa mật khẩu
         user.setFullName(registerRequestDto.getFullName()); // Giả sử RegisterRequestDto có trường fullName
-        if(registerRequestDto.getGener().equals("MALE")) {
+        if(registerRequestDto.getGender().equals("MALE")) {
             user.setGender(EGender.MALE);
         }
         else {

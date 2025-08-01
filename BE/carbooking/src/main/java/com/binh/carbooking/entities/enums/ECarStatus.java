@@ -2,6 +2,5 @@ package com.binh.carbooking.entities.enums;
 
 public enum ECarStatus {
     AVAILABLE,
-    NOT_AVAILABLE,
-    BOOKED
+    NOT_AVAILABLE
 }

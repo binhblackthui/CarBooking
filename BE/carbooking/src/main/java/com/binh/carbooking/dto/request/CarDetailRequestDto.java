@@ -22,4 +22,6 @@ public class CarDetailRequestDto {
     private String color;
     @Min(value = 1, message = "seat must be at least 1")
     private int seat;
+    @Min(value = 1900,message = "year must be at least 1900")
+    private long year;
 }

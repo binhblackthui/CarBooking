@@ -3,6 +3,7 @@ package com.binh.carbooking.controllers;
 
 import com.binh.carbooking.dto.request.CarRequestDto;
 import com.binh.carbooking.dto.response.CarResponseDto;
+import com.binh.carbooking.dto.response.DeleteResponseDto;
 import com.binh.carbooking.services.inf.ICarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +22,33 @@ public class CarController {
     public CarResponseDto saveCar(@Valid @RequestBody CarRequestDto carRequestDto){
         return carService.saveCar(carRequestDto);
     }
+
     @GetMapping("/{id}")
     public CarResponseDto getCarById(@PathVariable Long id){
         return carService.getCarById(id);
     }
+
     @GetMapping
-    public List<CarResponseDto> getListCar(@RequestParam (name = "page") int page,@RequestParam (name = "size") int size){
-        return carService.getListCar(page, size);
+    public List<CarResponseDto> getCars(@RequestParam (name = "page") int page,@RequestParam (name = "size") int size){
+        return carService.getCars(page, size);
+    }
+
+    @GetMapping("/overview")
+    public Object getCarOverview(){
+        return carService.getCarOverview();
+    }
+    @GetMapping("/available")
+    public List<CarResponseDto> getAvailableCars(@RequestParam (name = "page") int page,@RequestParam (name = "size") int size)
+    {
+        return carService.getAvailableCars(page,size);
     }
     @PutMapping("/{id}")
     public CarResponseDto updateCar(@PathVariable Long id,@Valid @RequestBody CarRequestDto carRequestDto){
         return carService.updateCar(id,carRequestDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public DeleteResponseDto deleteCar(@PathVariable Long id){
+        return carService.deleteCar(id);
     }
 }

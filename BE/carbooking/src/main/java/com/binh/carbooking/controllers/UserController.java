@@ -41,13 +41,12 @@ public class UserController {
     @DeleteMapping("/{id}")
     DeleteResponseDto deleteUser(@PathVariable Long id){ return userService.deleteUserService(id); }
 
-    @GetMapping("/{id}/cars")
-    List<CarResponseDto> getListCarByUser(@PathVariable Long id, @RequestParam("page") int page, @RequestParam("size") int size){
-        return carService.getListCarByUser(id,page,size);
-    }
+
 
     @GetMapping("/{id}/bookings")
     List<BookingResponseDto> getListBookingByUser(@PathVariable Long id, @RequestParam("page") int page, @RequestParam("size") int size){
         return bookingService.getListBookingByUser(id,page,size);
     }
+
+
 }

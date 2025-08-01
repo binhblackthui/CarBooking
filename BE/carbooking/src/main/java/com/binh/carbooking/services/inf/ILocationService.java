@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface ILocationService {
     LocationResponseDto saveLocation(LocationRequestDto locationRequestDto);
-    List<LocationResponseDto> getLocations(LocationRequestDto locationRequestDto);
-    LocationRequestDto getLocationById(Long id);
-    LocationResponseDto updateLocation(Long id, LocationRequestDto locationRequestDto);
+    List<LocationResponseDto> getLocations();
     DeleteResponseDto deleteLocation(Long id);
 }

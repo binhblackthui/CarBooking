@@ -1,21 +1,40 @@
 package com.binh.carbooking.dto.request;
 
 
-import lombok.Getter;
-import lombok.Setter;
+
+import com.binh.carbooking.entities.enums.EBookingStatus;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookingRequestDto {
+    @NotNull(message = "userId is required")
     private Long userId;
+
+    @NotNull(message = "carId is required")
     private Long carId;
+
+    @NotNull(message = "pickupLocationId is required")
     private Long pickupLocationId;
+
+    @NotNull(message = "returnLocationId is required")
     private Long returnLocationId;
+
+    @NotNull(message = "pickupTime is required")
     private LocalDate pickupTime;
+
+    @NotNull(message = "returnTime is required")
     private LocalDate returnTime;
+
+    @NotNull(message = "status is required")
+    private EBookingStatus status;
 }
 
 

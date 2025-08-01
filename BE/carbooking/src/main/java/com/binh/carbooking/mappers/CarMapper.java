@@ -4,7 +4,9 @@ package com.binh.carbooking.mappers;
 import com.binh.carbooking.dto.request.CarDetailRequestDto;
 import com.binh.carbooking.dto.request.CarRequestDto;
 import com.binh.carbooking.dto.request.ImageRequestDto;
+import com.binh.carbooking.dto.response.CarDetailResponseDto;
 import com.binh.carbooking.dto.response.CarResponseDto;
+import com.binh.carbooking.dto.response.CommentResponseDto;
 import com.binh.carbooking.dto.response.LocationResponseDto;
 import com.binh.carbooking.entities.*;
 
@@ -15,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,29 +32,29 @@ public class CarMapper {
         return CarResponseDto.builder()
                 .id(car.getId())
                 .licensePlate(car.getLicensePlate())
-                .userId(car.getUser().getId())
-                .car(modelMapper.map(car.getCarDetail(), CarDetailRequestDto.class))
-                .price(car.getPrice())
-                .year(car.getYear())
+                .carDetail(modelMapper.map(car.getCarDetail(), CarDetailResponseDto.class))
+                .pricePerDay(car.getPricePerDay())
                 .location(modelMapper.map(car.getLocation(), LocationResponseDto.class))
-                .censorshipStatus(car.getCensorshipStatus())
                 .status(car.getStatus())
                 .createdAt(car.getCreatedAt())
                 .description(car.getDescription())
                 .features(car.getFeatures())
-                .images(car.getImages().stream().map(image -> modelMapper.map(image, ImageRequestDto.class)).collect(Collectors.toList()))
+                .image(modelMapper.map(car.getImages(),ImageRequestDto.class))
+                .comments(Optional.ofNullable(car.getComments())
+                        .orElseGet(Collections::emptyList)
+                        .stream()
+                        .map(comment -> modelMapper.map(comment, CommentResponseDto.class))
+                        .collect(Collectors.toList()))
                 .build();
     }
-    public Car mapDtoToEntity(CarRequestDto dto) {
-        return Car.builder()
-                .user(userRepo.getById(dto.getUserId()))
-                .carDetail(carDetailRepo.getById(dto.getCarDetailId()))
-                .licensePlate(dto.getLicensePlate())
-                .year(dto.getYear())
-                .price(dto.getPrice())
-                .location(locationRepo.getById(dto.getLocation()))
-                .description(dto.getDescription())
-                .features(dto.getFeatures())
-                .build();
+    public Car mapDtoToEntity(CarRequestDto dto, Car car) {
+        car.setCarDetail(carDetailRepo.getById(dto.getCarDetailId()));
+        car.setLicensePlate(dto.getLicensePlate());
+        car.setPricePerDay(dto.getPricePerDay());
+        car.setLocation(locationRepo.getById(dto.getLocationId()));
+        car.setDescription(dto.getDescription());
+        car.setFeatures(dto.getFeatures());
+        car.setStatus(dto.getStatus());
+        return car;
     }
 }

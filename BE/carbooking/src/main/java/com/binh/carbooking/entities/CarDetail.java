@@ -22,4 +22,5 @@ public class CarDetail {
     private String fuelType;
     private String color;
     private int seat;
+    private int year;
 }

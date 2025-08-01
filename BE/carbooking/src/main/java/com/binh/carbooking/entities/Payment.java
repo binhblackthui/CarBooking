@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,7 +22,9 @@ public class Payment {
     @JoinColumn(name = "booking_id")
     private Booking booking;
     @Column(nullable = false)
-    private int total;
+    private BigDecimal total;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
     @Column(name = "payment_time")
     private LocalDateTime paymentTime;
     @Enumerated(EnumType.STRING)

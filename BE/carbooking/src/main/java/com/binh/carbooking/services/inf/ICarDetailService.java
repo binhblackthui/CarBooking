@@ -10,6 +10,6 @@ public interface ICarDetailService {
     CarDetailResponseDto saveCarDetail(CarDetailRequestDto carDetailRequestDto);
     CarDetailResponseDto getCarDetailById(Long id);
     List<CarDetailResponseDto> getListCarDetail(int page,int size);
-    List<CarDetailResponseDto> getCarDetail(CarDetailRequestDto carDetailRequestDto);
+    CarDetailResponseDto updateCarDetail(Long id, CarDetailRequestDto carDetailRequestDto);
     DeleteResponseDto deleteCarDetail(Long id);
 }

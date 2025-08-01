@@ -14,4 +14,15 @@ public interface BookingRepo extends JpaRepository<Booking,Long> {
 
     @Query(value = "SELECT * FROM booking WHERE booker_id = :userId ORDER BY created_at DESC", nativeQuery = true)
     List<Booking> getListBookingByUser(@Param("userId") Long customerId, Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) FROM booking", nativeQuery = true)
+    long totalBooking();
+    @Query(value = "SELECT COUNT(*) FROM booking WHERE status = 'PENDING'", nativeQuery = true)
+    long totalPendingBooking();
+    @Query(value = "SELECT COUNT(*) FROM booking WHERE status = 'CONFIRMED'", nativeQuery = true)
+    long totalConfirmedBooking();
+    @Query(value = "SELECT COUNT(*) FROM booking WHERE status = 'COMPLETED'", nativeQuery = true)
+    long totalCompletedBooking();
+    @Query(value = "SELECT COUNT(*) FROM booking WHERE status = 'CANCELLED'", nativeQuery = true)
+    long totalCancelledBooking();
 }

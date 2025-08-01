@@ -2,6 +2,7 @@ package com.binh.carbooking.mappers;
 
 import com.binh.carbooking.dto.request.BookingRequestDto;
 import com.binh.carbooking.dto.response.BookingResponseDto;
+import com.binh.carbooking.dto.response.CommentResponseDto;
 import com.binh.carbooking.dto.response.LocationResponseDto;
 import com.binh.carbooking.dto.response.PaymentResponseDto;
 import com.binh.carbooking.entities.Booking;
@@ -34,18 +35,19 @@ public class BookingMapper {
                 .status(booking.getStatus())
                 .createdAt(booking.getCreatedAt())
                 .payment(modelMapper.map(booking.getPayment(),PaymentResponseDto.class))
+                .comment(modelMapper.map(booking.getComment(), CommentResponseDto.class))
                 .build();
     }
 
-    public Booking mapDtoToEntity(BookingRequestDto bookingRequestDto){
-        return Booking.builder()
-                .user(userRepo.getById(bookingRequestDto.getUserId()))
-                .car(carRepo.getById(bookingRequestDto.getCarId()))
-                .pickupLocation(locationRepo.getById(bookingRequestDto.getPickupLocationId()))
-                .returnLocation(locationRepo.getById(bookingRequestDto.getReturnLocationId()))
-                .pickupTime(bookingRequestDto.getPickupTime())
-                .returnTime(bookingRequestDto.getReturnTime())
-                .build();
+    public Booking mapDtoToEntity(BookingRequestDto dto , Booking booking){
+        booking.setUser(userRepo.getById(dto.getUserId()));
+        booking.setCar(carRepo.getById(dto.getCarId()));
+        booking.setPickupLocation(locationRepo.getById(dto.getPickupLocationId()));
+        booking.setReturnLocation(locationRepo.getById(dto.getReturnLocationId()));
+        booking.setPickupTime(dto.getPickupTime());
+         booking.setReturnTime(dto.getReturnTime());
+         booking.setStatus(dto.getStatus());
+     return booking;
     }
 
 }

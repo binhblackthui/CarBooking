@@ -17,7 +17,7 @@ public class AuthUserResponseDto {
     private Long userId;
     private String fullName;
     private String roleName;
-    private String gener;
+    private String gender;
     private Date birthOfDay;
     private String phone;
     private String email;

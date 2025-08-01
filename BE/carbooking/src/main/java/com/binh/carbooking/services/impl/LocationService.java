@@ -8,9 +8,11 @@ import com.binh.carbooking.repository.LocationRepo;
 import com.binh.carbooking.services.inf.ILocationService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,22 +29,23 @@ public class LocationService implements ILocationService {
     }
 
     @Override
-    public List<LocationResponseDto> getLocations(LocationRequestDto locationRequestDto){
-        return null;
+    public List<LocationResponseDto> getLocations(){
+        try{
+            return locationRepo.findAll().stream().map(location -> modelMapper.map(location,LocationResponseDto.class)).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
-    public LocationRequestDto getLocationById(Long id){
-        return null;
-    }
 
-    @Override
-    public LocationResponseDto updateLocation(Long id, LocationRequestDto locationRequestDto){
-        return null;
-    }
 
     @Override
     public DeleteResponseDto deleteLocation(Long id){
-        return null;
+        try{
+            locationRepo.deleteById(id);
+            return new DeleteResponseDto("delete success", HttpStatus.OK);
+        } catch (Exception e) {
+            return new DeleteResponseDto("delete fail",HttpStatus.BAD_REQUEST);
+        }
     }
 }

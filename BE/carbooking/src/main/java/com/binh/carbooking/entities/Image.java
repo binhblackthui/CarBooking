@@ -13,10 +13,10 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long ImageId;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_car", referencedColumnName = "id")
     private Car car;
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", nullable = false,columnDefinition = "LONGTEXT")
     private String imageURL;
 
 }

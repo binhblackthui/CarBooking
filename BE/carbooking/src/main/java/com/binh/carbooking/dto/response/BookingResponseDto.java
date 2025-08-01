@@ -22,4 +22,5 @@ public class BookingResponseDto {
     private EBookingStatus status;
     private LocalDateTime createdAt;
     private PaymentResponseDto payment;
+    private CommentResponseDto comment;
 }

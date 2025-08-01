@@ -19,7 +19,7 @@ public class RegisterRequestDto {
     @NotBlank(message = "fullName is require")
     String fullName;
     @NotBlank(message = "gener is require")
-    String gener;
+    String gender;
     @NotNull(message = "dayOfBirth is required")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // Nếu binding từ form-data, thường với @RequestParam
     @JsonFormat(pattern = "yyyy-MM-dd") // Nếu binding từ JSON

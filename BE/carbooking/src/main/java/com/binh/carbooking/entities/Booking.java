@@ -2,9 +2,7 @@ package com.binh.carbooking.entities;
 
 import com.binh.carbooking.entities.enums.EBookingStatus;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +10,8 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +42,9 @@ public class Booking {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "booking")
+    @OneToOne(mappedBy = "booking",fetch = FetchType.EAGER , cascade = CascadeType.ALL)
     private Payment payment;
+
+    @OneToOne(mappedBy = "booking",fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    private Comment comment;
 }

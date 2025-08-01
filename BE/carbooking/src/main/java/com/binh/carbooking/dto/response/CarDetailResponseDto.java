@@ -16,4 +16,5 @@ public class CarDetailResponseDto {
     private String fuelType;
     private String color;
     private int seat;
+    private long year;
 }

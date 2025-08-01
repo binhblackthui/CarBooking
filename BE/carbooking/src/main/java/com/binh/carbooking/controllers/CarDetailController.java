@@ -2,6 +2,7 @@ package com.binh.carbooking.controllers;
 
 import com.binh.carbooking.dto.request.CarDetailRequestDto;
 import com.binh.carbooking.dto.response.CarDetailResponseDto;
+import com.binh.carbooking.dto.response.DeleteResponseDto;
 import com.binh.carbooking.services.inf.ICarDetailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,13 @@ public class CarDetailController {
     @GetMapping("/{id}")
     CarDetailResponseDto getCarDetailById(@PathVariable Long id){
         return carDetailService.getCarDetailById(id);
+    }
+    @PutMapping("/{id}")
+    CarDetailResponseDto updateCarDetail(@PathVariable Long id,@Valid @RequestBody CarDetailRequestDto carDetailRequestDto){
+        return carDetailService.updateCarDetail(id,carDetailRequestDto);
+    }
+    @DeleteMapping("/{id}")
+    DeleteResponseDto deleteCarDetail(@PathVariable Long id){
+        return carDetailService.deleteCarDetail(id);
     }
 }

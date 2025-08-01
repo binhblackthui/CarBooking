@@ -19,10 +19,12 @@ public class AuthController {
     private final IJwtAuthenticationService jwtAuthenticationService;
     @PostMapping("/login")
     public JwtResponseDto authenticationAccount(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+        System.out.println(loginRequestDto.getUsername());
         return jwtAuthenticationService.authenticationAccount(loginRequestDto);
     }
     @PostMapping("/register")
     public UserResponseDto registerAccount(@Valid @RequestBody RegisterRequestDto registerRequestDto){
+        System.out.println(registerRequestDto.getFullName());
         return jwtAuthenticationService.registerAccount(registerRequestDto);
     }
     @GetMapping
