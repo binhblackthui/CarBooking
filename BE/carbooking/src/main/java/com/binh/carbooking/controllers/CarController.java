@@ -42,6 +42,10 @@ public class CarController {
     {
         return carService.getAvailableCars(page,size);
     }
+    @GetMapping("/total")
+    public Object totalCarsByStatus(@RequestParam(name = "status") String status){
+        return carService.totalCarsByStatus(status);
+    }
     @PutMapping("/{id}")
     public CarResponseDto updateCar(@PathVariable Long id,@Valid @RequestBody CarRequestDto carRequestDto){
         return carService.updateCar(id,carRequestDto);

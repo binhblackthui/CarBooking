@@ -149,4 +149,20 @@ public class CarService implements ICarService {
         response.put("notAvailableCars",carRepo.totalNotAvailableCars());
         return response;
     }
+
+    @Override
+    public Object totalCarsByStatus(String status){
+        Map<String, Object> response = new HashMap<>();
+        if(status.equals("AVAILABLE")){
+            response.put("availableCars",carRepo.totalAvailableCars());
+        }
+        else if(status.equals("NOT_AVAILABLE"))
+        {
+           response.put("notAvailableCars",carRepo.totalNotAvailableCars());
+        }
+        else{
+            response.put("totalCars",carRepo.totalCars());
+        }
+        return response;
+    }
 }

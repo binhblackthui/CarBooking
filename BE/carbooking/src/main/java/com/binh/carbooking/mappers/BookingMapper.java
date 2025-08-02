@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 
 @Component
 @RequiredArgsConstructor
@@ -35,7 +37,9 @@ public class BookingMapper {
                 .status(booking.getStatus())
                 .createdAt(booking.getCreatedAt())
                 .payment(modelMapper.map(booking.getPayment(),PaymentResponseDto.class))
-                .comment(modelMapper.map(booking.getComment(), CommentResponseDto.class))
+                .comment(    Optional.ofNullable(booking.getComment())
+                        .map(comment -> modelMapper.map(comment, CommentResponseDto.class))
+                        .orElse(null))
                 .build();
     }
 

@@ -31,6 +31,10 @@ public class BookingController {
     Object getBookingOverview(){
         return bookingService.getBookingOverview();
     }
+    @GetMapping("/total")
+    Object totalBookingByStatus(@RequestParam (name = "status") String status){
+        return bookingService.totalBookingByStatus(status);
+    }
 
     @PutMapping("/{id}")
     BookingResponseDto updateBooking(@PathVariable Long id, @Valid @RequestBody BookingRequestDto bookingRequestDto){

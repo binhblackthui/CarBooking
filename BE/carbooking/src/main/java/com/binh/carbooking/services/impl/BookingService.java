@@ -103,6 +103,24 @@ public class BookingService implements IBookingService {
     }
 
     @Override
+    public  Object totalBookingByStatus(String status){
+        Map<String,Object> response = new HashMap<>();
+        if(status.equals("PENDING"))
+            response.put("pendingBookings",bookingRepo.totalPendingBooking());
+        else if(status.equals("CONFIRMED"))
+            response.put("confirmedBookings",bookingRepo.totalConfirmedBooking());
+        else if(status.equals("COMPLETED"))
+            response.put("completedBookings",bookingRepo.totalCompletedBooking());
+        else if(status.equals("CANCELLED"))
+            response.put("cancelledBookings",bookingRepo.totalCancelledBooking());
+        else
+            response.put("totalBookings",bookingRepo.totalBooking());
+        return response;
+    }
+
+
+
+    @Override
     public BookingResponseDto updateBooking(Long id, BookingRequestDto bookingRequestDto){
         if(!isExistBooking(id)){
             throw new ResourceNotFoundException("booking not exist");

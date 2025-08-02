@@ -16,4 +16,5 @@ public interface ICarService {
     CarResponseDto updateCar(Long id, CarRequestDto carRequestDto);
     DeleteResponseDto deleteCar(Long id);
     Object getCarOverview();
+    Object totalCarsByStatus(String status);
 }

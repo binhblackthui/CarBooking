@@ -9,10 +9,19 @@ import java.util.List;
 
 public interface IBookingService {
     BookingResponseDto saveBooking(BookingRequestDto bookingRequestDto);
+
     Object getBookingOverview();
-    List<BookingResponseDto> getBookings(int page,int size);
+
+    List<BookingResponseDto> getBookings(int page, int size);
+
     List<BookingResponseDto> getListBookingByUser(Long id, int page, int size);
+
     BookingResponseDto getBookingById(Long id);
-    BookingResponseDto updateBooking(Long id,BookingRequestDto bookingRequestDto);
+
+    BookingResponseDto updateBooking(Long id, BookingRequestDto bookingRequestDto);
+
     boolean isExistBooking(Long id);
+
+    Object totalBookingByStatus(String status);
+
 }
