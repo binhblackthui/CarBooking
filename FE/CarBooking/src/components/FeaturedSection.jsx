@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Title from "./Title";
 import CarCard from "./CarCard";
 import { assets, dummyCarData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { CarContext } from "../contexts/CarContext";
 const FeaturedSection = () => {
   const navigate = useNavigate();
+  const { getCars } = useContext(CarContext);
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        await getCars({ page: 0, size: 6 });
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+      }
+    };
+    fetchCars();
+  }, []);
   return (
     <div className="flex flex-col items-center py-24 px-6 md:px-16 lg:px-24 xl:px-32">
       <div>

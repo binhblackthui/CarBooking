@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { assets } from "../../assets/assets";
 import Title from "../../components/owner/Title";
 import { useContext } from "react";
@@ -6,62 +6,52 @@ import { CarContext } from "../../contexts/CarContext";
 import { BookingContext } from "../../contexts/BookingContext";
 const Dashboard = () => {
   const currency = import.meta.env.VITE_CURRENCY;
-  const { getCarOverview } = useContext(CarContext);
-  const [data, setData] = useState({
-    totalCars: 0,
-    availableCars: 0,
-    notAvailableCars: 0,
-    totalBookings: 0,
-    pendingBookings: 0,
-    confirmedBooking: 0,
-    completedBookings: 0,
-    cancelledBookings: 0,
-    recentBookings: [],
-    monthlyRevenue: 0,
-  });
-  const { getBookingOverview, getBookings } = useContext(BookingContext);
+  const sizePage = import.meta.env.VITE_SIZE_PAGE; // Default to 10 if not set
+  const { totalCarsByStatus, numberOfCars } = useContext(CarContext);
+  const { getBookings, totalBookingsByStatus, numberOfBookings, bookings } =
+    useContext(BookingContext);
   const dashboardCards = {
     car: [
       {
         title: "Total Cars",
-        value: data.totalCars,
+        value: numberOfCars.totalCars,
         icon: assets.carIconColored,
       },
       {
         title: "Available",
-        value: data.availableCars,
+        value: numberOfCars.availableCars,
         icon: assets.carIconColored,
       },
       {
         title: "Not Available",
-        value: data.notAvailableCars,
+        value: numberOfCars.notAvailableCars,
         icon: assets.carIconColored,
       },
     ],
     booking: [
       {
         title: "Total Bookings",
-        value: data.totalBookings,
+        value: numberOfBookings.totalBookings,
         icon: assets.listIconColored,
       },
       {
         title: "Pending",
-        value: data.pendingBookings,
+        value: numberOfBookings.pendingBookings,
         icon: assets.cautionIconColored,
       },
       {
         title: "Confirmed",
-        value: data.confirmedBooking,
+        value: numberOfBookings.confirmedBookings,
         icon: assets.check_icon,
       },
       {
         title: "Completed",
-        value: data.completedBookings,
+        value: numberOfBookings.completedBookings,
         icon: assets.check_icon,
       },
       {
         title: "Cancelled",
-        value: data.cancelledBookings,
+        value: numberOfBookings.cancelledBookings,
         icon: assets.ban_icon,
       },
     ],
@@ -69,26 +59,18 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const carData = await getCarOverview();
-        console.log(carData);
-        setData((prevData) => ({
-          ...prevData,
-          totalCars: carData.totalCars,
-          availableCars: carData.availableCars,
-          notAvailableCars: carData.notAvailableCars,
-        }));
-        const bookingData = await getBookingOverview();
-        setData((prevData) => ({
-          ...prevData,
-          totalBookings: bookingData.totalBookings,
-          pendingBookings: bookingData.pendingBookings,
-          completedBookings: bookingData.completedBookings,
-        }));
-        const recentBookings = await getBookings({
+        await totalCarsByStatus({ status: "AVAILABLE" });
+        await totalCarsByStatus({ status: "NOT_AVAILABLE" });
+        await totalCarsByStatus({ status: "" });
+        await totalBookingsByStatus({ status: "PENDING" });
+        await totalBookingsByStatus({ status: "CONFIRMED" });
+        await totalBookingsByStatus({ status: "CANCELLED" });
+        await totalBookingsByStatus({ status: "COMPLETED" });
+        await totalBookingsByStatus({ status: "" });
+        await getBookings({
           page: 0,
-          size: 5,
+          size: sizePage,
         });
-        console.log(recentBookings);
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error.message);
       }
@@ -138,7 +120,7 @@ const Dashboard = () => {
         <div className="p-4 md:p-6 border border-borderColor rounded-md max-w-lg w-full">
           <h1 className="text-lg font-medium">Recent Booking</h1>
           <p className="text-gray-500">Latest customer bookings</p>
-          {data.recentBookings.map((booking, index) => (
+          {bookings.map((booking, index) => (
             <div key={index} className="mt-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-primary/10">
@@ -173,10 +155,7 @@ const Dashboard = () => {
         <div className="p-4 md:p-6 border border-borderColor rounded-md w-full md:max-w-xs">
           <h1 className="text-lg font-medium">Monthly Revenue</h1>
           <p className="text-gray-500">Revenue for current month</p>
-          <p className="text-3xl mt-6 font-semibold text-primary">
-            {currency}
-            {data.monthlyRevenue}
-          </p>
+          <p className="text-3xl mt-6 font-semibold text-primary">{currency}</p>
         </div>
       </div>
     </div>

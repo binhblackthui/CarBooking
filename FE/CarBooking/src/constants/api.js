@@ -12,19 +12,29 @@ export const API_ENDPOINTS = {
   // Cars
   CARS: {
     GET_CARS: '/cars',
-    GET_CAR_OVERVIEW: '/cars/overview',
+
+    TOTAL_CARS_BY_STATUS: '/cars/total',
     POST: '/cars',
+
+    UPDATE: (carId) => `/cars/${carId}`,
+    DELETE: (carId) => `/cars/${carId}`,
     
   },
   // Bookings
   BOOKINGS:{
     GET_BOOKINGS:'/bookings',
-    GET_BOOKING_OVERVIEW: '/bookings/overview',
+    GET_TOTAL_BOOKINGS_BY_STATUS: '/bookings/total',
+    UPDATE_BOOKING: (bookingId) => `/bookings/${bookingId}`,
+    GET_BOOKING_PAYMENT: (bookingId) => `/bookings/${bookingId}/payment`,
+    UPDATE_BOOKING_PAYMENT: (bookingId) => `/bookings/${bookingId}/payment`,
+
+    
   },
 
   // Users
   USERS: {
-    GET_MY_CAR_SUMMARY: (userId) => `/users/${userId}/cars/summary`,
+    GET_USER_BY_ID: (userId) => `/users/${userId}`,
+    GET_BOOKINGS_BY_USER_ID: (userId) => `/users/${userId}/bookings`,
   },
 
   // Locations
@@ -37,6 +47,11 @@ export const API_ENDPOINTS = {
   CAR_TYPES: {
     GET_ALL: '/carDetail',
   },
+  PAYMENT:{
+    GET_PAYMENT_BY_ID: (paymentId) => `/payments/${paymentId}`,
+    UPDATE_PAYMENT: (paymentId) => `/payments/${paymentId}`,
+  
+  }
 };
 // Locations
 

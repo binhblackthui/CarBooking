@@ -27,30 +27,12 @@ const SideBar = () => {
             alt=""
             className="h-20 w-20 rounded-full object-cover cursor-pointer"
           />
-          <input
-            type="file"
-            id="image"
-            accept="image/*"
-            hidden
-            onChange={(e) => setImage(e.target.files[0])}
-          />
-          <div className="absolute hidden top-0 right-0 left-0 bottom-0 bg-black/10 rounded-full group-hover:flex items-center justify-center cursor-pointer">
-            <img src={assets.edit_icon} alt="" />
-          </div>
         </label>
       </div>
-      {image && (
-        <button className="absolute top-0 right-0 flex p-2 gap-1 bg-primary/10 text-primary cursor-pointer">
-          Save{" "}
-          <img
-            src={assets.check_icon}
-            width={13}
-            alt=""
-            onClick={updateImage}
-          />
-        </button>
-      )}
-      <p className="mt-2 text-base max-md:hidden">{user?.fullName}</p>
+
+      <p className="mt-2 text-base max-md:hidden">
+        {user?.roleName === "ROLE_ADMIN" ? "Admin" : user?.fullName || "Owner"}
+      </p>
       <div className="w-full">
         {ownerMenuLinks.map((link, index) => (
           <NavLink

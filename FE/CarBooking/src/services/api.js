@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL } from '../constants/api.js';
+import toast from 'react-hot-toast';
 
 // Create axios instance
 const api = axios.create({
@@ -47,9 +48,9 @@ api.interceptors.response.use(
       // Clear token
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-    
+      toast.error('not authenticated');
       // Optional: redirect
-      // window.location.href = '/login';
+
 
       return Promise.reject(error);
     }

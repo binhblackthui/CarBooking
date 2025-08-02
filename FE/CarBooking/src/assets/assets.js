@@ -46,6 +46,9 @@ import lock_icon from "./lock_icon.svg";
 import car_up from "./car_up.svg";
 import car_down from "./car_down.svg";
 import ban_icon from "./ban_icon.svg";
+import phone_icon from "./phone_icon.svg";
+import calendar_icon from "./calendar_icon.svg";
+import money_icon from "./money_icon.svg";
 export const cityList = ['New York', 'Los Angeles', 'Houston', 'Chicago']
 
 export const assets = {
@@ -97,6 +100,9 @@ export const assets = {
     car_up,
     car_down,
     ban_icon,
+    phone_icon,
+    calendar_icon,
+    money_icon
 }
 
 export const menuLinks = [
