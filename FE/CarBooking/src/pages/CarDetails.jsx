@@ -4,13 +4,25 @@ import { useParams, useNavigate } from "react-router-dom";
 import { assets, dummyCarData } from "../assets/assets";
 import Loader from "../components/Loader";
 import Pagination from "../components/Pagination";
-
+import { CarContext } from "../contexts/CarContext";
+import { useContext } from "react";
 const CarDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [car, setCar] = useState(null);
+  const { getCarById, loading } = useContext(CarContext);
   useEffect(() => {
-    setCar(dummyCarData.find((car) => car._id === id));
+    const fetchCarDetails = async () => {
+      try {
+        console.log("Fetching car details for ID:", id);
+        const carData = await getCarById(id);
+        setCar(carData);
+      } catch (error) {
+        console.error("Failed to fetch car details:", error.message);
+      }
+    };
+
+    fetchCarDetails();
   }, [id]);
   const currency = import.meta.env.VITE_CURRENCY;
 
@@ -29,28 +41,33 @@ const CarDetails = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
         <div className="lg:col-span-2">
           <img
-            src={car.image}
+            src={car.imageURL}
             alt=""
             className="w-full h-auto md:max-h-100 object-cover rounded-xl mb-6 shadow-md"
           />
           <div className="space-y-6">
             <h1 className="text-3xl font-bold">
-              {car.brand} {car.model}
+              {car.carDetail.brand} {car.carDetail.model}
             </h1>
             <p className="text-gray-500 text-lg">
-              {car.category} {car.year}
+              {car.carDetail.category} {car.carDetail.year}
             </p>
+            <p className="text-gray-500 text-lg">{car.licensePlate}</p>
 
             <hr className="border-borderColor my-6" />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
               {[
+                { icon: assets.license_plate_icon, text: car.licensePlate },
                 {
                   icon: assets.users_icon,
-                  text: `${car.seating_capacity} Seats`,
+                  text: `${car.carDetail.seat} Seats`,
                 },
-                { icon: assets.fuel_icon, text: car.fuel_type },
-                { icon: assets.car_icon, text: car.transmission },
-                { icon: assets.location_icon, text: car.location },
+                { icon: assets.fuel_icon, text: car.carDetail.fuelType },
+                { icon: assets.car_icon, text: car.carDetail.transmission },
+                {
+                  icon: assets.location_icon,
+                  text: car.location.district + ", " + car.location.city,
+                },
               ].map(({ icon, text }) => (
                 <div
                   key={text}
@@ -71,21 +88,20 @@ const CarDetails = () => {
             <div>
               <h1 className="text-xl font-medium mb-3">Features</h1>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {[
-                  "360 Camera",
-                  "Bluetooth",
-                  "Navigation System",
-                  "Sunroof",
-                ].map((item) => (
-                  <li key={item} className="flex items-center text-gray-500">
+                {car.features.split(",").map((feature, idx) => (
+                  <li
+                    key={idx}
+                    value={feature.trim()}
+                    title={feature.trim()}
+                    className="flex items-center text-gray-500"
+                  >
                     <img src={assets.check_icon} className="h-4 mr-2" alt="" />
-                    {item}
+                    {feature.trim()}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <hr className="border-borderColor my-6" />
             <div>
               <h1 className="text-xl font-medium mb-3">Review Car</h1>
               <div className="w-full  border-b border-borderColor space-y-4 p-3 text-gray-500 text-sm">

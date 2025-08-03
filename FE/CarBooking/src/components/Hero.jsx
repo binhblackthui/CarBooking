@@ -1,8 +1,26 @@
-import React from "react";
-import { assets, cityList } from "../assets/assets";
+import React, { useEffect } from "react";
+import { assets } from "../assets/assets";
+import { locationService } from "../services";
+import { CarContext } from "../contexts/CarContext";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 const Hero = () => {
-  const [pickupLocation, setPickupLocation] = React.useState("");
+  const { filter, setFilter } = React.useContext(CarContext);
+  const [locations, setLocations] = React.useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const locations = await locationService.getAllLocations();
+        console.log("Locations fetched successfully:", locations);
 
+        setLocations(locations);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+    fetchLocations();
+  }, []);
   return (
     <div className="h-screen flex flex-col items-center justify-center gap-14 bg-light text-center">
       <h1 className="text-4xl md:text-5xl font-semibold">
@@ -17,18 +35,22 @@ const Hero = () => {
           <div className="flex flex-col items-start gap-2">
             <select
               required
-              value={pickupLocation}
-              onChange={(e) => setPickupLocation(e.target.value)}
+              value={filter.location}
+              onChange={(e) =>
+                setFilter({ ...filter, location: e.target.value })
+              }
             >
               <option value="">Pickup Location</option>
-              {cityList.map((city) => (
-                <option key={city} value={city}>
-                  {city}
+              {locations.map((location) => (
+                <option key={location.id} value={location.id}>
+                  {location.district}
+                  {", "}
+                  {location.city}
                 </option>
               ))}
             </select>
             <p className="px-1 text-sm text-gray-500">
-              {pickupLocation ? pickupLocation : "Please select location"}
+              {filter.location ? filter.location : "Please select location"}
             </p>
           </div>
           <div className="flex flex-col items-start gap-2">
@@ -39,6 +61,10 @@ const Hero = () => {
               min={new Date().toISOString().split("T")[0]}
               className="text-sm text-gray-500"
               required
+              onChange={(e) =>
+                setFilter({ ...filter, pickup_date: e.target.value })
+              }
+              value={filter.pickup_date}
             />
           </div>
           <div className="flex flex-col items-start gap-2">
@@ -49,6 +75,10 @@ const Hero = () => {
               min={new Date().toISOString().split("T")[0]}
               className="text-sm text-gray-500"
               required
+              onChange={(e) =>
+                setFilter({ ...filter, return_date: e.target.value })
+              }
+              value={filter.return_date}
             />
           </div>
         </div>
@@ -68,6 +98,9 @@ const Hero = () => {
             src={assets.search_icon}
             alt="search"
             className="brightness-300"
+            onClick={() => {
+              navigate("/cars");
+            }}
           />
           Search
         </button>

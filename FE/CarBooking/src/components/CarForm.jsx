@@ -14,7 +14,7 @@ const CarForm = ({ car }) => {
     description: car?.description || "",
     features: car?.features || "",
     status: car?.status || "AVAILABLE",
-    image: car?.image || {},
+    imageURL: car?.imageURL || "",
   });
 
   const [carDetail, setCarDetail] = React.useState({
@@ -34,7 +34,7 @@ const CarForm = ({ car }) => {
     reader.onloadend = () => {
       setCarForm((prevCar) => ({
         ...prevCar,
-        image: { imageURL: reader.result },
+        imageURL: reader.result,
       }));
     };
     reader.readAsDataURL(file);
@@ -82,11 +82,7 @@ const CarForm = ({ car }) => {
         <div className="flex items-center gap-2 w-full">
           <label htmlFor="car-image">
             <img
-              src={
-                carForm.image.imageURL
-                  ? carForm.image.imageURL
-                  : assets.upload_icon
-              }
+              src={carForm.imageURL ? carForm.imageURL : assets.upload_icon}
               alt=""
               className="h-14 rounded cursor-pointer"
             />

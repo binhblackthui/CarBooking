@@ -14,9 +14,8 @@ const ManageBookings = () => {
     bookings,
     setBookings,
     loading,
-    totalBookingsByStatus,
-    numberOfBookings,
     updateBooking,
+    totalPages,
   } = useContext(BookingContext);
 
   const fetchData = async () => {
@@ -26,8 +25,6 @@ const ManageBookings = () => {
         size: sizePage,
       });
       console.log("Bookings data fetched:", bookingsData);
-      const totalBookings = await totalBookingsByStatus({ status: "" });
-      console.log("Total bookings fetched:", totalBookings);
     } catch (error) {
       console.error("Failed to fetch bookings:", error.message);
     }
@@ -53,7 +50,7 @@ const ManageBookings = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
 
   return (
     <div className="px-4 pt-10 md:px-10 w-full">
@@ -98,7 +95,7 @@ const ManageBookings = () => {
                       >
                         <td className="p-3 flex items-center gap-3">
                           <img
-                            src={booking.car.image.imageURL}
+                            src={booking.car.imageURL}
                             alt=""
                             className="w-12 h-12 aspect-square object-cover rounded-md"
                           />
@@ -217,9 +214,7 @@ const ManageBookings = () => {
               </div>
               <Pagination
                 currentPage={page}
-                totalPages={Math.ceil(
-                  numberOfBookings.totalBookings / sizePage
-                )}
+                totalPages={totalPages}
                 onPageChange={setPage}
               />
             </div>

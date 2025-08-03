@@ -12,7 +12,8 @@ export const API_ENDPOINTS = {
   // Cars
   CARS: {
     GET_CARS: '/cars',
-
+    GET_CAR_BY_ID: (carId) => `/cars/${carId}`,
+    SEARCH_CARS: '/cars/search',
     TOTAL_CARS_BY_STATUS: '/cars/total',
     POST: '/cars',
 

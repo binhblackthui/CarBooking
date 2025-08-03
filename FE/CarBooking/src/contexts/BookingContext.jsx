@@ -6,6 +6,7 @@ export const BookingContextProvider = ({ children }) => {
   const [bookings, setBookings] = React.useState([]);
   const [bookingOverview, setBookingOverview] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
+  const [totalPages, setTotalPages] = React.useState(0);
   const [numberOfBookings, setNumberOfBookings] = React.useState({
     totalBookings: 0,
     pendingBookings: 0,
@@ -17,7 +18,12 @@ export const BookingContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const bookings = await bookingService.getBookings(params);
-      setBookings(bookings);
+      setBookings(bookings.content);
+      setTotalPages(bookings.totalPages);
+      setNumberOfBookings((prev) => ({
+        ...prev,
+        totalBookings: bookings.totalElements,
+      }));
       return bookings;
     } catch (error) {
       console.error("Failed to fetch bookings:", error.message);
@@ -31,32 +37,14 @@ export const BookingContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const total = await bookingService.totalBookingsByStatus(params);
-      if (params?.status === "PENDING") {
-        setNumberOfBookings((prev) => ({
-          ...prev,
-          pendingBookings: total.pendingBookings,
-        }));
-      } else if (params?.status === "CONFIRMED") {
-        setNumberOfBookings((prev) => ({
-          ...prev,
-          confirmedBookings: total.confirmedBookings,
-        }));
-      } else if (params?.status === "CANCELLED") {
-        setNumberOfBookings((prev) => ({
-          ...prev,
-          cancelledBookings: total.cancelledBookings,
-        }));
-      } else if (params?.status === "COMPLETED") {
-        setNumberOfBookings((prev) => ({
-          ...prev,
-          completedBookings: total.completedBookings,
-        }));
-      } else {
-        setNumberOfBookings((prev) => ({
-          ...prev,
-          totalBookings: total.totalBookings,
-        }));
-      }
+      setNumberOfBookings((prev) => ({
+        ...prev,
+        totalBookings: total.totalBookings ?? prev.totalBookings,
+        pendingBookings: total.pendingBookings ?? prev.pendingBookings,
+        confirmedBookings: total.confirmedBookings ?? prev.confirmedBookings,
+        cancelledBookings: total.cancelledBookings ?? prev.cancelledBookings,
+        completedBookings: total.completedBookings ?? prev.completedBookings,
+      }));
       console.log("Total bookings fetched:", total);
     } catch (error) {
       console.error("Failed to fetch total bookings by status:", error.message);
@@ -69,7 +57,12 @@ export const BookingContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const bookings = await userService.getBookingsByUserId(userId, params);
-      setBookings(bookings);
+      setBookings(bookings.content);
+      setTotalPages(bookings.totalPages);
+      setNumberOfBookings((prev) => ({
+        ...prev,
+        totalBookings: bookings.totalElements,
+      }));
       return bookings;
     } catch (error) {
       console.error("Failed to fetch bookings by user ID:", error.message);
@@ -80,12 +73,6 @@ export const BookingContextProvider = ({ children }) => {
   };
   const updateBooking = async (bookingId, bookingData) => {
     setLoading(true);
-    console.log(
-      "Updating booking with ID:",
-      bookingId,
-      "and data:",
-      bookingData
-    );
     try {
       const updatedBooking = await bookingService.updateBooking(
         bookingId,
@@ -109,6 +96,7 @@ export const BookingContextProvider = ({ children }) => {
     bookingOverview,
     loading,
     numberOfBookings,
+    totalPages,
     totalBookingsByStatus,
     getBookings,
     getMyBookings,

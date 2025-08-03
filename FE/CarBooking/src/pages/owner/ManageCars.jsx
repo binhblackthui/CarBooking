@@ -9,15 +9,8 @@ import Loader from "../../components/Loader.jsx";
 const ManageCars = () => {
   const currency = import.meta.env.VITE_CURRENCY; // Fetch currency from environment variables
   const sizePage = import.meta.env.VITE_SIZE_PAGE; // Fetch size per page from environment variables
-  const {
-    getCars,
-    updateCar,
-    cars,
-    loading,
-    deleteCar,
-    totalCarsByStatus,
-    numberOfCars,
-  } = useContext(CarContext);
+  const { getCars, updateCar, cars, loading, deleteCar, totalPages } =
+    useContext(CarContext);
 
   const [openEdit, setOpenEdit] = useState(false);
   const [page, setPage] = useState(1);
@@ -33,7 +26,7 @@ const ManageCars = () => {
         description: car.description,
         features: car.features,
         status: status,
-        image: car.image,
+        imageURL: car.imageURL,
       };
       console.log("Updating car status:", carForm);
       await updateCar(car.id, carForm);
@@ -62,17 +55,7 @@ const ManageCars = () => {
       console.error("Failed to fetch owner's cars:", error.message);
     }
   };
-  const fetchTotalCars = async () => {
-    try {
-      await totalCarsByStatus({ status: "" });
-      console.log(numberOfCars.totalCars);
-    } catch (error) {
-      console.error("Failed to fetch total cars:", error.message);
-    }
-  };
-  useEffect(() => {
-    fetchTotalCars();
-  }, []);
+
   useEffect(() => {
     fetchCars();
   }, [page]);
@@ -132,7 +115,7 @@ const ManageCars = () => {
                           >
                             <td className="p-3 flex items-center gap-3">
                               <img
-                                src={car.image.imageURL}
+                                src={car.imageURL}
                                 alt=""
                                 className="w-12 h-12 aspect-square object-cover rounded-md"
                               />
@@ -235,7 +218,7 @@ const ManageCars = () => {
                   </div>
                   <Pagination
                     currentPage={page}
-                    totalPages={Math.ceil(numberOfCars.totalCars / sizePage)}
+                    totalPages={totalPages}
                     onPageChange={setPage}
                   />
                 </>

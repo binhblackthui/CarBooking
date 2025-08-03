@@ -12,6 +12,22 @@ export const carService = {
             throw error;
         }
     },
+    getCarById: async (carId) => {
+        try {
+            const response = await api.get(API_ENDPOINTS.CARS.GET_CAR_BY_ID(carId));
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+    searchCars: async (params = {}) => {
+        try {
+            const response = await api.get(API_ENDPOINTS.CARS.SEARCH_CARS, { params });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
     totalCarsByStatus: async (params = {}) => {
         try {
             const response = await api.get(API_ENDPOINTS.CARS.TOTAL_CARS_BY_STATUS, { params });
