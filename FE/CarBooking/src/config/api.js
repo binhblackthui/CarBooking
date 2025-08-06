@@ -50,7 +50,9 @@ api.interceptors.response.use(
       localStorage.removeItem('refreshToken');
       toast.error('not authenticated');
       // Optional: redirect
-
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/register' && window.location.pathname !== '/') {
+        window.location.href = '/';
+      }
 
       return Promise.reject(error);
     }

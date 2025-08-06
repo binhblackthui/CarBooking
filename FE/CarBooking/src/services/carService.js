@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "../config/api.js";
 import { API_ENDPOINTS } from "../constants/api.js";
 
 export const carService = {
@@ -9,6 +9,7 @@ export const carService = {
             const response = await api.get(API_ENDPOINTS.CARS.GET_CARS, { params });
             return response.data;
         } catch (error) {
+            console.error("Error fetching cars:", error);
             throw error;
         }
     },
@@ -17,6 +18,7 @@ export const carService = {
             const response = await api.get(API_ENDPOINTS.CARS.GET_CAR_BY_ID(carId));
             return response.data;
         } catch (error) {
+            console.error("Error fetching car by ID:", error);
             throw error;
         }
     },
@@ -25,6 +27,7 @@ export const carService = {
             const response = await api.get(API_ENDPOINTS.CARS.SEARCH_CARS, { params });
             return response.data;
         } catch (error) {
+            console.error("Error searching cars:", error);
             throw error;
         }
     },
@@ -34,6 +37,7 @@ export const carService = {
             console.log("Total cars response:", response);
             return response.data;
         } catch (error) {
+            console.error("Error fetching total cars by status:", error);
             throw error;
         }
     },
@@ -44,6 +48,7 @@ export const carService = {
             const response = await api.post(API_ENDPOINTS.CARS.POST, carData);
             return response.data;
         } catch (error) {
+            console.error("Error creating car:", error);
             throw error;
         }
     },
@@ -54,6 +59,7 @@ export const carService = {
             return response.data;
         }
         catch (error) {
+            console.error("Error updating car:", error);
             throw error;
         }
     },
@@ -61,11 +67,20 @@ export const carService = {
         try {
             const response = await api.delete(API_ENDPOINTS.CARS.DELETE(carId));
             return response.data;
-        }
-        catch (error) {
+        } catch (error) {
+            console.error("Error deleting car:", error);
             throw error;
         }
     },
    
+
+    getCarReviews: async (carId, params = {}) => {
+        try {
+            const response = await api.get(API_ENDPOINTS.CARS.GET_REVIEWS(carId), { params });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching car reviews:", error);
+            throw error;
+        }
+    },
 }
-    

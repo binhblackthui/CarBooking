@@ -12,7 +12,9 @@ import Dashboard from "./pages/owner/Dashboard";
 import AddCar from "./pages/owner/AddCar";
 import ManageCars from "./pages/owner/ManageCars";
 import ManageBookings from "./pages/owner/ManageBookings";
+import BookingDetails from "./pages/BookingDetails";
 import { Toaster } from "react-hot-toast";
+import ScrollToTop from "./components/ScrollToTop";
 const App = () => {
   const pathname = useLocation().pathname;
   const isOwnerPath =
@@ -21,10 +23,12 @@ const App = () => {
     <>
       <Toaster />
       {!isOwnerPath && <Navbar />}
+      <ScrollToTop />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/car-details/:id" element={<CarDetails />} />
+        <Route path="/booking-details/:id" element={<BookingDetails />} />
         <Route path="/cars" element={<Cars />} />
         <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/owner" element={<Layout />}>

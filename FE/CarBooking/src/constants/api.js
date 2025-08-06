@@ -1,7 +1,5 @@
-// API Base URL - Change according to your Spring Boot backend address
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
-// API Endpoints
 export const API_ENDPOINTS = {
   // Authentication
   AUTH: {
@@ -16,19 +14,19 @@ export const API_ENDPOINTS = {
     SEARCH_CARS: '/cars/search',
     TOTAL_CARS_BY_STATUS: '/cars/total',
     POST: '/cars',
-
     UPDATE: (carId) => `/cars/${carId}`,
     DELETE: (carId) => `/cars/${carId}`,
-    
+    GET_REVIEWS: (carId) => `/cars/${carId}/reviews`,
   },
   // Bookings
   BOOKINGS:{
+    POST: '/bookings',
     GET_BOOKINGS:'/bookings',
     GET_TOTAL_BOOKINGS_BY_STATUS: '/bookings/total',
+    GET_BOOKING_BY_ID: (bookingId) => `/bookings/${bookingId}`,
     UPDATE_BOOKING: (bookingId) => `/bookings/${bookingId}`,
-    GET_BOOKING_PAYMENT: (bookingId) => `/bookings/${bookingId}/payment`,
-    UPDATE_BOOKING_PAYMENT: (bookingId) => `/bookings/${bookingId}/payment`,
-
+    UPDATE_PAYMENT_BY_BOOKING: (bookingId) => `/bookings/${bookingId}/payment`,
+    CREATED_REVIEW: (bookingId) => `/bookings/${bookingId}/reviews`,
     
   },
 

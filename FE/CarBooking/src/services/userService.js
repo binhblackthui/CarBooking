@@ -1,5 +1,5 @@
 import { API_ENDPOINTS } from "../constants/api";
-import api from "./api";
+import api from '../config/api.js';
 
 
 export const userService = {

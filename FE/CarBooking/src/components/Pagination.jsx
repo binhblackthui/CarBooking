@@ -1,12 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { getVisiblePageNumbers } from "../utils/pageUtils";
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination = ({ currentPage, totalPages }) => {
+  const navigate = useNavigate();
   const pages = getVisiblePageNumbers(currentPage, totalPages);
-
-  useEffect(() => {
-    // Scroll to top when page changes
-    console.log("Current page changed:", totalPages);
-  }, []);
+  const onPageChange = (page) => {
+    if (page !== currentPage) {
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set("page", page);
+      searchParams.set("size", import.meta.env.VITE_SIZE_PAGE);
+      // Scroll to top on page change
+      navigate(`?${searchParams.toString()}`);
+    }
+  };
   return (
     <div className="flex justify-center mt-6">
       <div className="flex items-center gap-2 text-gray-500">

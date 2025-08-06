@@ -1,4 +1,4 @@
-import api from './api.js';
+import api from '../config/api.js';
 import { API_ENDPOINTS } from '../constants/api.js';
 
 export const authService = {

@@ -1,12 +1,18 @@
 import React, { createContext } from "react";
 import { bookingService } from "../services";
 import { userService } from "../services";
+import toast from "react-hot-toast";
 export const BookingContext = createContext();
 export const BookingContextProvider = ({ children }) => {
-  const [bookings, setBookings] = React.useState([]);
-  const [bookingOverview, setBookingOverview] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-  const [totalPages, setTotalPages] = React.useState(0);
+  const [bookings, setBookings] = React.useState({
+    data: [],
+    currentPage: 0,
+    totalPages: 0,
+    totalItems: 0,
+    size: import.meta.env.VITE_SIZE_PAGE,
+  });
+  const [loading, setLoading] = React.useState(true);
+
   const [numberOfBookings, setNumberOfBookings] = React.useState({
     totalBookings: 0,
     pendingBookings: 0,
@@ -14,16 +20,28 @@ export const BookingContextProvider = ({ children }) => {
     cancelledBookings: 0,
     completedBookings: 0,
   });
+
+  const createBooking = async (bookingData) => {
+    setLoading(true);
+    try {
+      console.log("Creating booking with data:", bookingData);
+      const newBooking = await bookingService.createBooking(bookingData);
+      toast.success("Booking created successfully!");
+      return newBooking;
+    } catch (error) {
+      console.error("Failed to create booking:", error.message);
+      toast.error("Failed! Please try again.");
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
   const getBookings = async (params) => {
     setLoading(true);
     try {
       const bookings = await bookingService.getBookings(params);
-      setBookings(bookings.content);
-      setTotalPages(bookings.totalPages);
-      setNumberOfBookings((prev) => ({
-        ...prev,
-        totalBookings: bookings.totalElements,
-      }));
+      console.log("Bookings fetched:", bookings);
+      setBookings(bookings);
       return bookings;
     } catch (error) {
       console.error("Failed to fetch bookings:", error.message);
@@ -32,7 +50,18 @@ export const BookingContextProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
+  const getBookingById = async (bookingId) => {
+    setLoading(true);
+    try {
+      const booking = await bookingService.getBookingById(bookingId);
+      return booking;
+    } catch (error) {
+      console.error("Failed to fetch booking by ID:", error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
   const totalBookingsByStatus = async (params) => {
     setLoading(true);
     try {
@@ -57,12 +86,7 @@ export const BookingContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const bookings = await userService.getBookingsByUserId(userId, params);
-      setBookings(bookings.content);
-      setTotalPages(bookings.totalPages);
-      setNumberOfBookings((prev) => ({
-        ...prev,
-        totalBookings: bookings.totalElements,
-      }));
+      setBookings(bookings);
       return bookings;
     } catch (error) {
       console.error("Failed to fetch bookings by user ID:", error.message);
@@ -78,14 +102,53 @@ export const BookingContextProvider = ({ children }) => {
         bookingId,
         bookingData
       );
-      setBookings((prevBookings) =>
-        prevBookings.map((booking) =>
+      console.log("Booking updated successfully:", updatedBooking);
+      setBookings((prev) => ({
+        ...prev,
+        data: prev.data.map((booking) =>
           booking.id === bookingId ? updatedBooking : booking
-        )
-      );
+        ),
+      }));
+      toast.success("Booking updated successfully!");
       return updatedBooking;
     } catch (error) {
-      console.error("Failed to update booking:", error.message);
+      toast.error("Failed to update booking. Please try again.");
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updatePaymentByBooking = async (bookingId, paymentData) => {
+    setLoading(true);
+    try {
+      const updatedPayment = await bookingService.updatePaymentByBooking(
+        bookingId,
+        paymentData
+      );
+      toast.success("Payment updated successfully!");
+      return updatedPayment;
+    } catch (error) {
+      console.error("Failed to update payment by booking:", error.message);
+      toast.error("Failed to update payment. Please try again.");
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createReview = async (bookingId, reviewData) => {
+    setLoading(true);
+    try {
+      const newReview = await bookingService.createReview(
+        bookingId,
+        reviewData
+      );
+      toast.success("Review created successfully!");
+      return newReview;
+    } catch (error) {
+      console.error("Failed to create review:", error.message);
+      toast.error("Failed to create review. Please try again.");
       throw error;
     } finally {
       setLoading(false);
@@ -93,17 +156,19 @@ export const BookingContextProvider = ({ children }) => {
   };
   const bookingContextData = {
     bookings,
-    bookingOverview,
+
     loading,
     numberOfBookings,
-    totalPages,
+    createBooking,
     totalBookingsByStatus,
     getBookings,
     getMyBookings,
     setBookings,
-    setBookingOverview,
+    getBookingById,
     setLoading,
     updateBooking,
+    updatePaymentByBooking,
+    createReview,
   };
   return (
     <BookingContext.Provider value={bookingContextData}>

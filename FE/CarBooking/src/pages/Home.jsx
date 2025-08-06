@@ -7,7 +7,6 @@ function Home() {
     <>
       <Hero />
       <FeaturedSection />
-      <Banner />
     </>
   );
 }

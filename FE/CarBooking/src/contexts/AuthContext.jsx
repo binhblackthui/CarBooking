@@ -3,7 +3,7 @@ import { authService } from "../services/authService.js";
 import authReducer, {
   initialAuthState,
   authActions,
-} from "../features/AuthSlice.js";
+} from "../store/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 

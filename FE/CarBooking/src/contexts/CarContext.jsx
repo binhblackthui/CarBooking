@@ -3,26 +3,24 @@ import { carService } from "../services";
 import toast from "react-hot-toast";
 export const CarContext = createContext();
 export const CarContextProvider = ({ children }) => {
-  const [loading, setLoading] = React.useState(false);
-  const [cars, setCars] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [cars, setCars] = React.useState({
+    data: [],
+    currentPage: 0,
+    totalPages: 0,
+    totalItems: 0,
+    size: import.meta.env.VITE_SIZE_PAGE,
+  });
   const [numberOfCars, setNumberOfCars] = React.useState({
     totalCars: 0,
     availableCars: 0,
     notAvailableCars: 0,
   });
-  const [totalPages, setTotalPages] = React.useState(0);
-  const [filter, setFilter] = React.useState({
-    location: "",
-    pickup_date: "",
-    return_date: "",
-    page: 0,
-    size: 10,
-  });
+  const [reviews, setReviews] = React.useState([]);
 
   const addCar = async (carData) => {
     setLoading(true);
     try {
-      console.log("Adding car with data:", carData);
       const newCar = await carService.createCar(carData);
       toast.success("Car added successfully!");
       return newCar;
@@ -39,12 +37,7 @@ export const CarContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const cars = await carService.getCars(params);
-      setCars(cars.content);
-      setTotalPages(cars.totalPages);
-      setNumberOfCars((prev) => ({
-        ...prev,
-        totalCars: cars.totalElements,
-      }));
+      setCars(cars);
       return cars;
     } catch (error) {
       console.error("Failed to fetch my cars:", error.message);
@@ -52,11 +45,11 @@ export const CarContextProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   const getCarById = async (carId) => {
     setLoading(true);
     try {
       const car = await carService.getCarById(carId);
-      console.log("Car details fetched:", car);
       return car;
     } catch (error) {
       console.error("Failed to fetch car by ID:", error.message);
@@ -69,15 +62,9 @@ export const CarContextProvider = ({ children }) => {
   const searchCars = async (params) => {
     setLoading(true);
     try {
-      const res = await carService.searchCars(params);
-      console.log("Search results:", res);
-      setCars(res.content);
-      setTotalPages(res.totalPages);
-      setNumberOfCars((prev) => ({
-        ...prev,
-        totalCars: res.totalElements,
-      }));
-      return res;
+      const cars = await carService.searchCars(params);
+      setCars(cars);
+      return cars;
     } catch (error) {
       console.error("Failed to search cars:", error.message);
       throw error;
@@ -98,8 +85,6 @@ export const CarContextProvider = ({ children }) => {
           ? { notAvailableCars: total.notAvailableCars }
           : { totalCars: total.totalCars }),
       }));
-      console.log("Total cars fetched:", total);
-
       return total;
     } catch (error) {
       console.error("Failed to fetch total cars:", error.message);
@@ -113,9 +98,10 @@ export const CarContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const updatedCar = await carService.updateCar(carId, carData);
-      setCars((prevCars) =>
-        prevCars.map((car) => (car.id === carId ? updatedCar : car))
-      );
+      setCars((prev) => ({
+        ...prev,
+        data: prev.data.map((car) => (car.id === carId ? updatedCar : car)),
+      }));
       toast.success("Car updated successfully!");
       return updatedCar;
     } catch (error) {
@@ -131,11 +117,23 @@ export const CarContextProvider = ({ children }) => {
     setLoading(true);
     try {
       await carService.deleteCar(carId);
-      setCars((prevCars) => prevCars.filter((car) => car.id !== carId));
       toast.success("Car deleted successfully!");
     } catch (error) {
       console.error("Failed to delete car:", error.message);
       toast.error("Failed to delete car. Please try again.");
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+  const getCarReviews = async (carId, params) => {
+    setLoading(true);
+    try {
+      const reviews = await carService.getCarReviews(carId, params);
+      setReviews(reviews);
+      return reviews;
+    } catch (error) {
+      console.error("Failed to fetch car reviews:", error.message);
       throw error;
     } finally {
       setLoading(false);
@@ -146,18 +144,16 @@ export const CarContextProvider = ({ children }) => {
     cars,
     loading,
     numberOfCars,
-    totalPages,
-    filter,
-    setFilter,
-    setNumberOfCars,
-    totalCarsByStatus,
-    setCars,
+    reviews,
+    setLoading,
     addCar,
+    totalCarsByStatus,
     getCars,
     getCarById,
     searchCars,
     updateCar,
     deleteCar,
+    getCarReviews,
   };
 
   return (
