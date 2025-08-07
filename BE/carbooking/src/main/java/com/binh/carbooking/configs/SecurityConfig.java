@@ -51,7 +51,7 @@ public class SecurityConfig {
                                 "/api/v1/auth",
                                 "/api/public/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**","/api/v1/cars/search","/api/v1/cars/{id}","/api/v1/cars/{carId}/reviews","/api/v1/locations"
                         ).permitAll()
                         .requestMatchers(POST,"/api/v1/cars").hasAnyAuthority(ERoleType.ROLE_ADMIN.toString())
                         .requestMatchers(GET,"/api/v1/cars","/api/v1/bookings","/api/v1/users").hasAnyAuthority(ERoleType.ROLE_ADMIN.toString())

@@ -21,7 +21,7 @@ public class CarDetailController {
     }
     @GetMapping
     List<CarDetailResponseDto> getListCarDetail(@RequestParam (name = "page") int page,@RequestParam(name = "size") int size){
-        return carDetailService.getListCarDetail(page, size);
+        return carDetailService.getListCarDetail();
     }
     @GetMapping("/{id}")
     CarDetailResponseDto getCarDetailById(@PathVariable Long id){

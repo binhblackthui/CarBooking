@@ -5,6 +5,7 @@ import com.binh.carbooking.dto.response.CarDetailResponseDto;
 import com.binh.carbooking.dto.response.DeleteResponseDto;
 import com.binh.carbooking.entities.CarDetail;
 import com.binh.carbooking.exceptions.ResourceFoundException;
+import com.binh.carbooking.exceptions.ValidationException;
 import com.binh.carbooking.repository.CarDetailRepo;
 import com.binh.carbooking.services.inf.ICarDetailService;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,12 @@ public class CarDetailService implements ICarDetailService {
     private final CarDetailRepo carDetailRepo;
     @Override
     public CarDetailResponseDto saveCarDetail(CarDetailRequestDto carDetailRequestDto){
-        CarDetail carDetail = modelMapper.map(carDetailRequestDto,CarDetail.class);
-        return modelMapper.map(carDetailRepo.save(carDetail), CarDetailResponseDto.class);
+        try {
+            CarDetail carDetail = modelMapper.map(carDetailRequestDto, CarDetail.class);
+            return modelMapper.map(carDetailRepo.save(carDetail), CarDetailResponseDto.class);
+        } catch (Exception e) {
+            throw new ValidationException(e.getMessage());
+        }
     }
     @Override
     public CarDetailResponseDto getCarDetailById(Long id){
@@ -36,10 +41,9 @@ public class CarDetailService implements ICarDetailService {
         return modelMapper.map(carDetail, CarDetailResponseDto.class);
     }
     @Override
-    public List<CarDetailResponseDto> getListCarDetail(int page, int size){
+    public List<CarDetailResponseDto> getListCarDetail(){
         try{
-            Pageable pageable = PageRequest.of(page,size);
-            return carDetailRepo.findAll()
+                   return carDetailRepo.findAll()
                     .stream()
                     .map(carDetail -> modelMapper.map(carDetail, CarDetailResponseDto.class))
                     .collect(Collectors.toList());
@@ -60,7 +64,7 @@ public class CarDetailService implements ICarDetailService {
             return modelMapper.map(carDetailRequestDto, CarDetailResponseDto.class);
         }
         catch (Exception e){
-            throw new ResourceFoundException("update fail");
+            throw new ValidationException("update fail");
         }
 
     }

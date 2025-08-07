@@ -2,6 +2,7 @@ package com.binh.carbooking.services.inf;
 
 import com.binh.carbooking.dto.request.UserRequestDto;
 import com.binh.carbooking.dto.response.DeleteResponseDto;
+import com.binh.carbooking.dto.response.PageResponse;
 import com.binh.carbooking.dto.response.UserResponseDto;
 
 
@@ -14,7 +15,7 @@ public interface IUserService {
 
     UserResponseDto findUserById(Long id);
 
-    List<UserResponseDto> findUserList(int page, int size);
+    PageResponse<UserResponseDto> getUsers(int page, int size);
 
     boolean isExistUser(UserRequestDto userRequestDto);
 

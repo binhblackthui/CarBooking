@@ -1,6 +1,5 @@
 package com.binh.carbooking.dto.response;
 
-import com.binh.carbooking.entities.enums.EPaymentMethod;
 import com.binh.carbooking.entities.enums.EPaymentStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +14,5 @@ public class PaymentResponseDto {
     private Long bookingId;
     private BigDecimal total;
     private LocalDateTime paymentTime;
-    private EPaymentMethod paymentMethod;
     private EPaymentStatus paymentStatus;
 }

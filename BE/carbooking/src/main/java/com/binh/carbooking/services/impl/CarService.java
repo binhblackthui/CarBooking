@@ -1,24 +1,24 @@
 package com.binh.carbooking.services.impl;
 
 import com.binh.carbooking.dto.request.CarRequestDto;
-import com.binh.carbooking.dto.request.ImageRequestDto;
 import com.binh.carbooking.dto.response.CarResponseDto;
 import com.binh.carbooking.dto.response.DeleteResponseDto;
+import com.binh.carbooking.dto.response.PageResponse;
 import com.binh.carbooking.entities.Car;
-import com.binh.carbooking.entities.Image;
 import com.binh.carbooking.entities.enums.ECarStatus;
 import com.binh.carbooking.exceptions.DuplicateValueInResourceException;
 import com.binh.carbooking.exceptions.ResourceFoundException;
 import com.binh.carbooking.exceptions.ResourceNotFoundException;
+import com.binh.carbooking.exceptions.ValidationException;
 import com.binh.carbooking.mappers.BookingMapper;
 import com.binh.carbooking.mappers.CarMapper;
 import com.binh.carbooking.repository.BookingRepo;
 import com.binh.carbooking.repository.CarRepo;
-import com.binh.carbooking.repository.ImageRepo;
 import com.binh.carbooking.services.inf.ICarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,8 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,57 +41,66 @@ public class CarService implements ICarService {
     private final BookingRepo bookingRepo;
     private final CarMapper carMapper;
     private final ModelMapper modelMapper;
-    private final ImageRepo imageRepo;
     private final BookingMapper bookingMapper;
 
     @Override
-    public List<CarResponseDto> getCars(int page, int size){
-        Pageable pageable = PageRequest.of(page, size);
-        return carRepo.findAll(pageable)
-                .stream()
-                .map(car -> carMapper.mapEntityToDto(car))
-                .collect(Collectors.toList());
+    public PageResponse<CarResponseDto> getCars(int page, int size){
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Car> cars = carRepo.findAll(pageable);
+            return new PageResponse<>(
+                    cars.getContent().stream().map(carMapper::mapEntityToDto).collect(Collectors.toList()),
+                    cars.getNumber(),
+                    cars.getTotalPages(),
+                    cars.getTotalElements(),
+                    cars.getSize()
+            );
+        }
+        catch (Exception e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
     }
 
-    public List<CarResponseDto> getAvailableCars( int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return carRepo.findCarByStatus(pageable)
-                .stream()
-                .map(carMapper::mapEntityToDto)
-                .collect(Collectors.toList());
-    }
+    @Override
+    public PageResponse<CarResponseDto> searchCars(int page, int size, String status, Long location, LocalDate pickupDate, LocalDate returnDate){
+        try{
+            if(pickupDate == null){
+                pickupDate = LocalDate.now();
+                returnDate = pickupDate.plusDays(1);
+            }
 
+            Pageable pageable = PageRequest.of(page,size);
+            Page<Car> cars = carRepo.searchCars(pageable,status,location,pickupDate,returnDate);
+            return new PageResponse<>(
+                    cars.getContent().stream().map(carMapper::mapEntityToDto).collect(Collectors.toList()),
+                    cars.getNumber(),
+                    cars.getTotalPages(),
+                    cars.getTotalElements(),
+                    cars.getSize()
+        );
+        }
+        catch (Exception e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+    }
 
 
 
     @Override
     public CarResponseDto saveCar(CarRequestDto carRequestDto) {
-        if(isExistCar(carRequestDto.getLicensePlate()))
-            throw new DuplicateValueInResourceException("Car is exist");
-        Car car = new Car();
-        car = carMapper.mapDtoToEntity(carRequestDto,car);
-
-        car.setStatus(ECarStatus.AVAILABLE);
-        car.setCreatedAt(LocalDateTime.now());
-        Car savedCar = carRepo.save(car);
-
-        Image image = new Image();
-
-        image.setImageURL(carRequestDto.getImage().getImageURL());
-        image.setCar(savedCar);
-
-        savedCar.setImages(imageRepo.save(image));
-
-//        List<Image> images = new ArrayList<>();
-//        for (ImageRequestDto imageRequestDto : carRequestDto.getImage()) {
-//            Image image = modelMapper.map(imageRequestDto, Image.class);
-//            image.setCar(savedCar);
-//            images.add(imageRepo.save(image));
-//        }
-//
-//        savedCar.setImages(images);
-
-        return carMapper.mapEntityToDto(savedCar);
+        try {
+            if (isExistCar(carRequestDto.getLicensePlate()))
+                throw new DuplicateValueInResourceException("Car is exist");
+            Car car = new Car();
+            car = carMapper.mapDtoToEntity(carRequestDto, car);
+            car.setStatus(ECarStatus.AVAILABLE);
+            car.setCreatedAt(LocalDateTime.now());
+            Car savedCar = carRepo.save(car);
+            return carMapper.mapEntityToDto(savedCar);
+        }
+        catch (Exception e){
+            throw new ValidationException(e.getMessage());
+        }
     }
 
     @Override
@@ -119,7 +128,7 @@ public class CarService implements ICarService {
             return carMapper.mapEntityToDto(car);
         }catch (Exception e)
         {
-            throw new ResourceFoundException("update fail");
+            throw new ValidationException("update fail");
         }
 
     }
@@ -141,28 +150,22 @@ public class CarService implements ICarService {
         return false;
     }
 
-    @Override
-    public Object getCarOverview(){
-        Map<String, Object> response = new HashMap<>();
-        response.put("totalCars", carRepo.totalCars());
-        response.put("availableCars",carRepo.totalAvailableCars());
-        response.put("notAvailableCars",carRepo.totalNotAvailableCars());
-        return response;
-    }
+
 
     @Override
     public Object totalCarsByStatus(String status){
-        Map<String, Object> response = new HashMap<>();
-        if(status.equals("AVAILABLE")){
-            response.put("availableCars",carRepo.totalAvailableCars());
+        try {
+            Map<String, Object> response = new HashMap<>();
+            if (status.equals("AVAILABLE")) {
+                response.put("availableCars", carRepo.totalAvailableCars());
+            } else if (status.equals("NOT_AVAILABLE")) {
+                response.put("notAvailableCars", carRepo.totalNotAvailableCars());
+            } else {
+                response.put("totalCars", carRepo.totalCars());
+            }
+            return response;
+        } catch (Exception e) {
+            throw new ResourceNotFoundException(e.getMessage());
         }
-        else if(status.equals("NOT_AVAILABLE"))
-        {
-           response.put("notAvailableCars",carRepo.totalNotAvailableCars());
-        }
-        else{
-            response.put("totalCars",carRepo.totalCars());
-        }
-        return response;
     }
 }

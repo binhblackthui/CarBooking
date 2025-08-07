@@ -2,7 +2,7 @@ package com.binh.carbooking.mappers;
 
 import com.binh.carbooking.dto.request.BookingRequestDto;
 import com.binh.carbooking.dto.response.BookingResponseDto;
-import com.binh.carbooking.dto.response.CommentResponseDto;
+import com.binh.carbooking.dto.response.ReviewResponseDto;
 import com.binh.carbooking.dto.response.LocationResponseDto;
 import com.binh.carbooking.dto.response.PaymentResponseDto;
 import com.binh.carbooking.entities.Booking;
@@ -34,11 +34,13 @@ public class BookingMapper {
                 .returnLocation(modelMapper.map(booking.getReturnLocation(),LocationResponseDto.class))
                 .pickupTime(booking.getPickupTime())
                 .returnTime(booking.getReturnTime())
+                .customerName(booking.getCustomerName())
+                .phone(booking.getPhone())
                 .status(booking.getStatus())
                 .createdAt(booking.getCreatedAt())
                 .payment(modelMapper.map(booking.getPayment(),PaymentResponseDto.class))
-                .comment(    Optional.ofNullable(booking.getComment())
-                        .map(comment -> modelMapper.map(comment, CommentResponseDto.class))
+                .review(    Optional.ofNullable(booking.getReview())
+                        .map(comment -> modelMapper.map(comment, ReviewResponseDto.class))
                         .orElse(null))
                 .build();
     }
@@ -49,8 +51,10 @@ public class BookingMapper {
         booking.setPickupLocation(locationRepo.getById(dto.getPickupLocationId()));
         booking.setReturnLocation(locationRepo.getById(dto.getReturnLocationId()));
         booking.setPickupTime(dto.getPickupTime());
-         booking.setReturnTime(dto.getReturnTime());
-         booking.setStatus(dto.getStatus());
+        booking.setReturnTime(dto.getReturnTime());
+        booking.setStatus(dto.getStatus());
+        booking.setCustomerName(dto.getCustomerName());
+        booking.setPhone(dto.getPhone());
      return booking;
     }
 

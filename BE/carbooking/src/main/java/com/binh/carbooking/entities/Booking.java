@@ -29,7 +29,6 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "pickup_location_id", referencedColumnName = "id")
     private Location pickupLocation;
-
     @ManyToOne
     @JoinColumn(name = "return_location_id", referencedColumnName = "id")
     private Location returnLocation;
@@ -37,6 +36,12 @@ public class Booking {
     private LocalDate pickupTime;
     @Column(name = "return_time")
     private LocalDate returnTime;
+
+    @Column(name = "customer_name")
+    private String customerName;
+
+    @Column( nullable = false )
+    private String phone;
     @Enumerated(EnumType.STRING)
     private EBookingStatus status;
     @Column(name = "created_at")
@@ -46,5 +51,5 @@ public class Booking {
     private Payment payment;
 
     @OneToOne(mappedBy = "booking",fetch = FetchType.EAGER , cascade = CascadeType.ALL)
-    private Comment comment;
+    private Review review;
 }

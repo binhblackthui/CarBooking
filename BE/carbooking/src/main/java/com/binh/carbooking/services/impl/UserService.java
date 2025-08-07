@@ -2,18 +2,21 @@ package com.binh.carbooking.services.impl;
 
 import com.binh.carbooking.dto.request.UserRequestDto;
 import com.binh.carbooking.dto.response.DeleteResponseDto;
+import com.binh.carbooking.dto.response.PageResponse;
 import com.binh.carbooking.dto.response.UserResponseDto;
 import com.binh.carbooking.entities.Role;
 import com.binh.carbooking.entities.User;
 import com.binh.carbooking.entities.enums.ERoleType;
 import com.binh.carbooking.exceptions.DuplicateValueInResourceException;
 import com.binh.carbooking.exceptions.ResourceFoundException;
+import com.binh.carbooking.exceptions.ResourceNotFoundException;
 import com.binh.carbooking.exceptions.ValidationException;
 import com.binh.carbooking.repository.RoleRepo;
 import com.binh.carbooking.repository.UserRepo;
 import com.binh.carbooking.services.inf.IUserService;
 import com.binh.carbooking.utils.EmailUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -51,7 +54,7 @@ public class UserService implements IUserService {
 
         }
         else
-            throw new ValidationException("email notrt valid");
+            throw new ValidationException("email not valid");
     }
     @Override
     public UserResponseDto updateUser(UserRequestDto userRequestDto, Long id){
@@ -73,15 +76,20 @@ public class UserService implements IUserService {
         return modelMaper.map(user,UserResponseDto.class);
     }
     @Override
-    public List<UserResponseDto> findUserList(int page, int size){
+    public PageResponse<UserResponseDto> getUsers(int page, int size){
         try{
             Pageable pageable = PageRequest.of(page,size);
-            return userRepo.findAll(pageable)
-                    .stream()
-                    .map(user -> modelMaper.map(user,UserResponseDto.class))
-                    .collect(Collectors.toList());
+            Page<User> users = userRepo.findAll(pageable);
+
+            return new PageResponse<>(
+                    users.getContent().stream().map(user -> modelMaper.map(user,UserResponseDto.class)).collect(Collectors.toList()),
+                    users.getNumber(),
+                    users.getTotalPages(),
+                    users.getNumberOfElements(),
+                    users.getNumber()
+            );
         } catch (Exception e) {
-            throw new ResourceFoundException(e.getMessage());
+            throw new ResourceNotFoundException(e.getMessage());
         }
     }
     @Override

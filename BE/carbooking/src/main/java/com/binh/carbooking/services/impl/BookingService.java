@@ -1,28 +1,29 @@
 package com.binh.carbooking.services.impl;
 
 import com.binh.carbooking.dto.request.BookingRequestDto;
+import com.binh.carbooking.dto.request.PaymentRequestDto;
 import com.binh.carbooking.dto.response.BookingResponseDto;
+import com.binh.carbooking.dto.response.PageResponse;
 import com.binh.carbooking.entities.Booking;
 import com.binh.carbooking.entities.Payment;
 import com.binh.carbooking.entities.enums.EBookingStatus;
-import com.binh.carbooking.entities.enums.EPaymentMethod;
 import com.binh.carbooking.entities.enums.EPaymentStatus;
 import com.binh.carbooking.exceptions.ResourceFoundException;
 import com.binh.carbooking.exceptions.ResourceNotFoundException;
+import com.binh.carbooking.exceptions.ValidationException;
 import com.binh.carbooking.mappers.BookingMapper;
 import com.binh.carbooking.repository.*;
 import com.binh.carbooking.services.inf.IBookingService;
 import com.binh.carbooking.utils.MoneyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 @Slf4j
@@ -35,6 +36,7 @@ public class BookingService implements IBookingService {
     private final UserRepo userRepo;
     private final CarRepo carRepo;
     private final LocationRepo locationRepo;
+    private final PaymentService paymentService;
 
     @Override
     public BookingResponseDto saveBooking(BookingRequestDto bookingRequestDto){
@@ -44,55 +46,76 @@ public class BookingService implements IBookingService {
             throw new ResourceNotFoundException("car not found");
         if(!locationRepo.existsById(bookingRequestDto.getPickupLocationId()) && !locationRepo.existsById(bookingRequestDto.getReturnLocationId()))
             throw new ResourceNotFoundException("location not found");
-        Booking booking = new Booking();
-        booking = bookingMapper.mapDtoToEntity(bookingRequestDto,booking);
-        booking.setStatus(EBookingStatus.PENDING);
-        booking.setCreatedAt(LocalDateTime.now());
-        Booking saveBooking = bookingRepo.save(booking);
+        if(bookingRepo.hasConflictingBooking(bookingRequestDto.getCarId(),bookingRequestDto.getPickupTime(),bookingRequestDto.getReturnTime()))
+            throw new ResourceFoundException("conflicting booking");
 
-        Payment payment = new Payment();
-        payment.setBooking(saveBooking);
-        payment.setTotal(MoneyUtils.calculateTotal(bookingRequestDto.getPickupTime(),bookingRequestDto.getReturnTime(),saveBooking.getCar().getPricePerDay()));
-        payment.setStatus(EPaymentStatus.PENDING);
-        payment.setCreatedAt(LocalDateTime.now());
-        payment.setMethod(EPaymentMethod.OFFLINE);
+        try {
+            Booking booking = new Booking();
+            booking = bookingMapper.mapDtoToEntity(bookingRequestDto, booking);
+            booking.setStatus(EBookingStatus.PENDING);
+            booking.setCreatedAt(LocalDateTime.now());
+            Booking saveBooking = bookingRepo.save(booking);
 
-       saveBooking.setPayment(paymentRepo.save(payment));
-        return bookingMapper.mapEntityToDto(saveBooking);
+            Payment payment = new Payment();
+            payment.setBooking(saveBooking);
+            payment.setTotal(MoneyUtils.calculateTotal(bookingRequestDto.getPickupTime(), bookingRequestDto.getReturnTime(), saveBooking.getCar().getPricePerDay()));
+            payment.setStatus(EPaymentStatus.PENDING);
+            payment.setCreatedAt(LocalDateTime.now());
+
+
+            saveBooking.setPayment(paymentRepo.save(payment));
+            return bookingMapper.mapEntityToDto(saveBooking);
+        } catch (Exception e) {
+            throw new ValidationException(e.getMessage());
+        }
     }
-    public Object getBookingOverview(){
-        Map<String, Object> response = new HashMap<>();
-        response.put("totalBookings", bookingRepo.totalBooking());
-        response.put("pendingBookings",bookingRepo.totalPendingBooking());
-        response.put("confirmedBooking",bookingRepo.totalConfirmedBooking());
-        response.put("completedBookings",bookingRepo.totalCompletedBooking());
-        response.put("cancelledBooking",bookingRepo.totalCancelledBooking());
-        return response;
-    }
+
     @Override
-    public List<BookingResponseDto> getBookings(int page, int size){
+    public PageResponse<BookingResponseDto> getBookings(int page, int size){
         try{
             Pageable pageable = PageRequest.of(page, size);
-            return bookingRepo.findAll(pageable)
-                    .stream()
-                    .map(booking -> bookingMapper.mapEntityToDto(booking))
-                    .collect(Collectors.toList());
+            Page<Booking> bookings = bookingRepo.findAll(pageable);
+
+            return new PageResponse<>(
+                    bookings.getContent().stream().map(bookingMapper::mapEntityToDto).collect(Collectors.toList()),
+                    bookings.getNumber(),
+                    bookings.getTotalPages(),
+                    bookings.getNumberOfElements(),
+                    bookings.getSize()
+            );
         }
         catch (Exception e){
-            throw new ResourceFoundException(e.getMessage());
+            throw new ResourceNotFoundException(e.getMessage());
         }
     }
 
     @Override
-    public List<BookingResponseDto> getListBookingByUser(Long id, int page, int size){
+    public PageResponse<BookingResponseDto> getListBookingByUser(Long id, int page, int size){
         try{
             Pageable pageable = PageRequest.of(page,size);
-            return bookingRepo.getListBookingByUser(id,pageable)
-                    .stream()
-                    .map(booking -> bookingMapper.mapEntityToDto(booking))
-                    .collect(Collectors.toList());
+            Page<Booking> bookings = bookingRepo.getListBookingByUser(pageable,id);
+            return new PageResponse<>(
+                    bookings.getContent().stream().map(bookingMapper::mapEntityToDto).collect(Collectors.toList()),
+                    bookings.getNumber(),
+                    bookings.getTotalPages(),
+                    bookings.getNumberOfElements(),
+                    bookings.getSize()
+                    );
+
         } catch (Exception e) {
-            throw new ResourceFoundException(e.getMessage());
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    @Override
+    public BookingResponseDto getBookingByUser(Long id, Long bookingID){
+        try{
+            Booking booking = bookingRepo.getBookingByUser(id,bookingID);
+            if(booking == null)
+                throw new ResourceNotFoundException("booking not exist");
+            return bookingMapper.mapEntityToDto(booking);
+        }catch (Exception e){
+            throw new ResourceNotFoundException(e.getMessage());
         }
     }
 
@@ -104,18 +127,23 @@ public class BookingService implements IBookingService {
 
     @Override
     public  Object totalBookingByStatus(String status){
-        Map<String,Object> response = new HashMap<>();
-        if(status.equals("PENDING"))
-            response.put("pendingBookings",bookingRepo.totalPendingBooking());
-        else if(status.equals("CONFIRMED"))
-            response.put("confirmedBookings",bookingRepo.totalConfirmedBooking());
-        else if(status.equals("COMPLETED"))
-            response.put("completedBookings",bookingRepo.totalCompletedBooking());
-        else if(status.equals("CANCELLED"))
-            response.put("cancelledBookings",bookingRepo.totalCancelledBooking());
-        else
-            response.put("totalBookings",bookingRepo.totalBooking());
-        return response;
+        try {
+            Map<String, Object> response = new HashMap<>();
+            if (status.equals("PENDING"))
+                response.put("pendingBookings", bookingRepo.totalPendingBooking());
+            else if (status.equals("CONFIRMED"))
+                response.put("confirmedBookings", bookingRepo.totalConfirmedBooking());
+            else if (status.equals("COMPLETED"))
+                response.put("completedBookings", bookingRepo.totalCompletedBooking());
+            else if (status.equals("CANCELLED"))
+                response.put("cancelledBookings", bookingRepo.totalCancelledBooking());
+            else
+                response.put("totalBookings", bookingRepo.totalBooking());
+            return response;
+        }catch (Exception e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+
     }
 
 
@@ -132,16 +160,18 @@ public class BookingService implements IBookingService {
                     }
 
             );
+            if(bookingRequestDto.getStatus().equals(EBookingStatus.CANCELLED))
+                paymentService.updatePaymentByBooking(id,new PaymentRequestDto(EPaymentStatus.FAILED));
+
             return getBookingById(id);
         }
         catch (Exception e){
-            throw new ResourceFoundException("update fail");
+            throw new ValidationException("update fail");
         }
     }
 
     @Override
     public boolean isExistBooking(Long id){
         return bookingRepo.findById(id).isPresent();
-
     }
 }

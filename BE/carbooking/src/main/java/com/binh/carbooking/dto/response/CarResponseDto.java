@@ -1,7 +1,5 @@
 package com.binh.carbooking.dto.response;
 
-import com.binh.carbooking.dto.request.CarDetailRequestDto;
-import com.binh.carbooking.dto.request.ImageRequestDto;
 import com.binh.carbooking.entities.enums.ECarStatus;
 import lombok.*;
 
@@ -26,6 +24,5 @@ public class CarResponseDto {
     private LocalDateTime createdAt;
     private String description;
     private String features;
-    private ImageRequestDto image;
-    private List<CommentResponseDto> comments = new ArrayList<>();
+    private String imageURL;
 }

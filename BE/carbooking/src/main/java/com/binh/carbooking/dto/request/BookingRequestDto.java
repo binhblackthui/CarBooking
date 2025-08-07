@@ -3,6 +3,7 @@ package com.binh.carbooking.dto.request;
 
 
 import com.binh.carbooking.entities.enums.EBookingStatus;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -33,6 +34,11 @@ public class BookingRequestDto {
     @NotNull(message = "returnTime is required")
     private LocalDate returnTime;
 
+    @NotNull(message = "customerName is required")
+    private String customerName;
+
+    @NotNull(message = "phone is required")
+    private String phone;
     @NotNull(message = "status is required")
     private EBookingStatus status;
 }

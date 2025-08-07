@@ -19,8 +19,10 @@ public class BookingResponseDto {
     private LocationResponseDto returnLocation;
     private LocalDate pickupTime;
     private LocalDate returnTime;
+    private String customerName;
+    private String phone;
     private EBookingStatus status;
     private LocalDateTime createdAt;
     private PaymentResponseDto payment;
-    private CommentResponseDto comment;
+    private ReviewResponseDto review;
 }

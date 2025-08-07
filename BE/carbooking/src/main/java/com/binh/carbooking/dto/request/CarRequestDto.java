@@ -24,5 +24,5 @@ public class CarRequestDto {
     private String description;
     private String features;
     private ECarStatus status;
-    ImageRequestDto image;
+    private String imageURL;
 }

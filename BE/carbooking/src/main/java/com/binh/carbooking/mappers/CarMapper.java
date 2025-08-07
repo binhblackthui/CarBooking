@@ -1,12 +1,11 @@
 package com.binh.carbooking.mappers;
 
 
-import com.binh.carbooking.dto.request.CarDetailRequestDto;
+
 import com.binh.carbooking.dto.request.CarRequestDto;
-import com.binh.carbooking.dto.request.ImageRequestDto;
 import com.binh.carbooking.dto.response.CarDetailResponseDto;
 import com.binh.carbooking.dto.response.CarResponseDto;
-import com.binh.carbooking.dto.response.CommentResponseDto;
+import com.binh.carbooking.dto.response.ReviewResponseDto;
 import com.binh.carbooking.dto.response.LocationResponseDto;
 import com.binh.carbooking.entities.*;
 
@@ -39,12 +38,7 @@ public class CarMapper {
                 .createdAt(car.getCreatedAt())
                 .description(car.getDescription())
                 .features(car.getFeatures())
-                .image(modelMapper.map(car.getImages(),ImageRequestDto.class))
-                .comments(Optional.ofNullable(car.getComments())
-                        .orElseGet(Collections::emptyList)
-                        .stream()
-                        .map(comment -> modelMapper.map(comment, CommentResponseDto.class))
-                        .collect(Collectors.toList()))
+                .imageURL(car.getImageURL())
                 .build();
     }
     public Car mapDtoToEntity(CarRequestDto dto, Car car) {
@@ -55,6 +49,7 @@ public class CarMapper {
         car.setDescription(dto.getDescription());
         car.setFeatures(dto.getFeatures());
         car.setStatus(dto.getStatus());
+        car.setImageURL(dto.getImageURL());
         return car;
     }
 }

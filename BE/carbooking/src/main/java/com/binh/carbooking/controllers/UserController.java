@@ -1,10 +1,7 @@
 package com.binh.carbooking.controllers;
 
 import com.binh.carbooking.dto.request.UserRequestDto;
-import com.binh.carbooking.dto.response.BookingResponseDto;
-import com.binh.carbooking.dto.response.CarResponseDto;
-import com.binh.carbooking.dto.response.DeleteResponseDto;
-import com.binh.carbooking.dto.response.UserResponseDto;
+import com.binh.carbooking.dto.response.*;
 import com.binh.carbooking.services.inf.IBookingService;
 import com.binh.carbooking.services.inf.ICarService;
 import com.binh.carbooking.services.inf.IUserService;
@@ -26,8 +23,8 @@ public class UserController {
     UserResponseDto getUser(@PathVariable Long id){return userService.findUserById(id); }
 
     @GetMapping
-    List<UserResponseDto> getUserList(@RequestParam (name = "page") int page, @RequestParam(name = "size") int size){
-        return userService.findUserList(page,size);
+    PageResponse<UserResponseDto> getUserList(@RequestParam (name = "page") int page, @RequestParam(name = "size") int size){
+        return userService.getUsers(page,size);
     }
 
     @PostMapping
@@ -44,9 +41,13 @@ public class UserController {
 
 
     @GetMapping("/{id}/bookings")
-    List<BookingResponseDto> getListBookingByUser(@PathVariable Long id, @RequestParam("page") int page, @RequestParam("size") int size){
+    PageResponse<BookingResponseDto> getListBookingByUser(@PathVariable Long id, @RequestParam("page") int page, @RequestParam("size") int size){
         return bookingService.getListBookingByUser(id,page,size);
     }
 
+    @GetMapping("/{id}/bookings/{bookingId}")
+    BookingResponseDto getBookingByUser(@PathVariable Long id, @PathVariable Long bookingId){
+        return bookingService.getBookingByUser(id,bookingId);
+    }
 
 }

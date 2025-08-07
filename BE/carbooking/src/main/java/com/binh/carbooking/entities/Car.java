@@ -38,8 +38,8 @@ public class Car {
     @Column(length = 1000)
     private String description;
     private String features;
-    @OneToOne(mappedBy = "car",fetch = FetchType.EAGER , cascade = CascadeType.ALL)
-    private Image images;
+    @Column(name = "image_url", nullable = false,columnDefinition = "LONGTEXT")
+    private String imageURL;
     @OneToMany(mappedBy = "car",fetch = FetchType.LAZY , cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 }
