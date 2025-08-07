@@ -25,7 +25,7 @@ const BookingDetails = () => {
       }
       try {
         if (user.roleName === "ROLE_USER") {
-          const bookingData = await getBookingByUser(user.id, id);
+          const bookingData = await getBookingByUser(user.userId, id);
           setBooking(bookingData);
         } else {
           const bookingData = await getBookingById(id);
