@@ -50,10 +50,9 @@ const ManageCars = () => {
     fetchCars();
   };
   const fetchCars = async () => {
-    console.log("add car");
     try {
-      const res = await getCars({ page: page - 1, size: sizePage });
-      console.log("My cars fetched:", res);
+      await getCars({ page: page - 1, size: sizePage });
+      window.scrollTo(0, 0);
     } catch (error) {
       console.error("Failed to fetch owner's cars:", error.message);
     }

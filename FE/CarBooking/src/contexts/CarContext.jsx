@@ -9,14 +9,13 @@ export const CarContextProvider = ({ children }) => {
     currentPage: 0,
     totalPages: 0,
     totalItems: 0,
-    size: import.meta.env.VITE_SIZE_PAGE,
+    size: 0,
   });
   const [numberOfCars, setNumberOfCars] = React.useState({
     totalCars: 0,
     availableCars: 0,
     notAvailableCars: 0,
   });
-  const [reviews, setReviews] = React.useState([]);
 
   const addCar = async (carData) => {
     setLoading(true);
@@ -130,7 +129,6 @@ export const CarContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const reviews = await carService.getCarReviews(carId, params);
-      setReviews(reviews);
       return reviews;
     } catch (error) {
       console.error("Failed to fetch car reviews:", error.message);
@@ -144,7 +142,6 @@ export const CarContextProvider = ({ children }) => {
     cars,
     loading,
     numberOfCars,
-    reviews,
     setLoading,
     addCar,
     totalCarsByStatus,

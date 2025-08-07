@@ -10,38 +10,50 @@ import { BookingContext } from "../contexts/BookingContext";
 import { AuthContext } from "../contexts/AuthContext";
 import { locationService } from "../services";
 import { motion } from "motion/react";
+import toast from "react-hot-toast";
+
 const CarDetails = () => {
   const currency = import.meta.env.VITE_CURRENCY;
-  const sizePage = import.meta.env.VITE_SIZE_PAGE; // Default to 10 if not set
+  const sizePage = import.meta.env.VITE_SIZE_PAGE;
+  const { getCarById, getCarReviews } = useContext(CarContext);
   const { id } = useParams();
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    returnLocationId: "",
+    pickupTime: "",
+    returnTime: "",
+    customerName: "",
+    phone: "",
+  });
   const [locations, setLocations] = useState([]);
-  const [locationId, setLocationId] = useState("");
+  const [reviews, setReviews] = useState({
+    content: [],
+    totalElements: 0,
+    totalPages: 0,
+  });
+  const [page, setPage] = useState(1);
   const [car, setCar] = useState(null);
-  const { getCarById, getCarReviews, reviews, loading } =
-    useContext(CarContext);
-  const { createBooking, loading: bookingLoading } = useContext(BookingContext);
+  const { createBooking } = useContext(BookingContext);
   const {
     authState: { user },
   } = useContext(AuthContext);
-  const [page, setPage] = useState(1);
-  const [date, setDate] = useState({
-    pickup_date: "",
-    return_date: "",
-  });
-  const handleSubmit = async () => {
-    const formData = {
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error("Please login");
+      return;
+    }
+    const bookingForm = {
+      ...formData,
       userId: user.userId,
       carId: car.id,
       pickupLocationId: car.location.id,
-      returnLocationId: locationId,
-      pickupTime: date.pickup_date,
-      returnTime: date.return_date,
       status: "PENDING",
     };
-
+    console.log("Form Data:", formData);
     try {
-      const res = await createBooking(formData);
+      const res = await createBooking(bookingForm);
       navigate("/booking-details/" + res.id);
     } catch (error) {
       console.error("Error creating booking:", error);
@@ -54,6 +66,8 @@ const CarDetails = () => {
         console.log("Fetching car details for ID:", id);
         const carData = await getCarById(id);
         setCar(carData);
+
+        console.log("Car details fetched successfully:", carData);
       } catch (error) {
         console.error("Failed to fetch car details:", error.message);
       }
@@ -61,6 +75,7 @@ const CarDetails = () => {
 
     fetchCarDetails();
   }, [id]);
+
   useEffect(() => {
     const fetchCarLocation = async () => {
       try {
@@ -73,21 +88,22 @@ const CarDetails = () => {
     };
     fetchCarLocation();
   }, []);
+
   useEffect(() => {
     const fetchCarReviews = async () => {
       try {
-        console.log("Fetching reviews for car ID:", id);
         const reviewsData = await getCarReviews(id, {
           page: page - 1,
           size: sizePage,
         });
-        console.log("Reviews fetched:", reviewsData);
+        setReviews(reviewsData);
       } catch (error) {
         console.error("Failed to fetch car reviews:", error.message);
       }
     };
     fetchCarReviews();
   }, [id, page]);
+
   return car === null ? (
     <Loader />
   ) : (
@@ -113,7 +129,7 @@ const CarDetails = () => {
             transition={{ duration: 0.5 }}
             src={car?.imageURL}
             alt=""
-            className="w-full h-auto md:max-h-100 object-cover rounded-xl mb-6 shadow-md"
+            className="w-full h-auto md:max-h-130 object-cover rounded-xl mb-6 shadow-md"
           />
           <motion.div
             initial={{ opacity: 0 }}
@@ -222,9 +238,9 @@ const CarDetails = () => {
               id="pickup-date"
               min={new Date().toDateString().split("T")[0]}
               onChange={(e) =>
-                setDate({
-                  ...date,
-                  pickup_date: e.target.value,
+                setFormData({
+                  ...formData,
+                  pickupTime: e.target.value,
                 })
               }
             />
@@ -238,9 +254,9 @@ const CarDetails = () => {
               id="return-date"
               min={new Date().toDateString().split("T")[0]}
               onChange={(e) =>
-                setDate({
-                  ...date,
-                  return_date: e.target.value,
+                setFormData({
+                  ...formData,
+                  returnTime: e.target.value,
                 })
               }
             />
@@ -251,8 +267,10 @@ const CarDetails = () => {
               name=""
               id=""
               required
-              value={locationId}
-              onChange={(e) => setLocationId(e.target.value)}
+              value={formData.returnLocationId}
+              onChange={(e) =>
+                setFormData({ ...formData, returnLocationId: e.target.value })
+              }
               className="border border-borderColor px-3 py-2 rounded-lg"
             >
               <option value="">Select Return Location</option>
@@ -262,6 +280,35 @@ const CarDetails = () => {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              className="border border-borderColor px-4 py-2 rounded-lg"
+              placeholder="Enter your name"
+              required
+              id="name"
+              value={formData.customerName}
+              onChange={(e) =>
+                setFormData({ ...formData, customerName: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="phone">Phone</label>
+            <input
+              type="text"
+              className="border border-borderColor px-4 py-2 rounded-lg"
+              placeholder="Enter your phone number"
+              required
+              id="phone"
+              value={formData.phone}
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
+            />
           </div>
           <button
             type="submit"

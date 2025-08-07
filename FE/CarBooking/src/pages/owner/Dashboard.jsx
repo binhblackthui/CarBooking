@@ -72,7 +72,7 @@ const Dashboard = () => {
         await totalBookingsByStatus({ status: "" });
         await getBookings({
           page: 0,
-          size: sizePage,
+          size: 5,
         });
       } catch (error) {
         console.error("Failed to fetch dashboard data:", error.message);

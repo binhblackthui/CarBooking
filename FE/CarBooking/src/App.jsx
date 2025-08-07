@@ -15,6 +15,7 @@ import ManageBookings from "./pages/owner/ManageBookings";
 import BookingDetails from "./pages/BookingDetails";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/ScrollToTop";
+import ProtectedRoute from "./components/ProtectedRoute";
 const App = () => {
   const pathname = useLocation().pathname;
   const isOwnerPath =
@@ -28,10 +29,31 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/car-details/:id" element={<CarDetails />} />
-        <Route path="/booking-details/:id" element={<BookingDetails />} />
+        <Route
+          path="/booking-details/:id"
+          element={
+            <ProtectedRoute roles={["ROLE_USER", "ROLE_ADMIN"]}>
+              <BookingDetails />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/cars" element={<Cars />} />
-        <Route path="/my-bookings" element={<MyBookings />} />
-        <Route path="/owner" element={<Layout />}>
+        <Route
+          path="/my-bookings"
+          element={
+            <ProtectedRoute roles={["ROLE_USER"]}>
+              <MyBookings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/owner"
+          element={
+            <ProtectedRoute roles={["ROLE_ADMIN"]}>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="add-car" element={<AddCar />} />
           <Route path="manage-cars" element={<ManageCars />} />

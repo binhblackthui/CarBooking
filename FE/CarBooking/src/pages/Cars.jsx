@@ -22,20 +22,21 @@ const Cars = () => {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const res = await searchCars({
+        await searchCars({
           page: page - 1,
           size: sizePage,
           location: location,
           pickup_date: pickup_date || "",
           return_date: return_date || "",
         });
-        console.log("Cars fetched successfully", res);
+        window.scrollTo(0, 0);
       } catch (error) {
         console.error("Error fetching cars:", error);
       }
     };
     fetchCars();
   }, [page]);
+
   return (
     <div>
       <motion.div

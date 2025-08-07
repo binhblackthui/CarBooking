@@ -1,29 +1,28 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { assets } from "../../assets/assets";
 import Title from "../../components/owner/Title";
 import Pagination from "../../components/Pagination";
 import { BookingContext } from "../../contexts/BookingContext.jsx";
-import BillForm from "../../components/BillForm.jsx";
-import Loader from "../../components/Loader.jsx";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "motion/react";
-import { b } from "motion/react-client";
+import { useNavigate } from "react-router-dom";
 
 const ManageBookings = () => {
+  const currency = import.meta.env.VITE_CURRENCY;
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const page = searchParams.get("page") || 1; // Default to page 1 if not set
   const sizePage = import.meta.env.VITE_SIZE_PAGE; // Default to 10 if not set
-  const [openPayment, setOpenPayment] = useState(false);
-  const { getBookings, bookings, setBookings, loading, updateBooking } =
+  const { getBookings, bookings, updateBooking, updatePaymentByBooking } =
     useContext(BookingContext);
 
   const fetchData = async () => {
     try {
-      const bookingsData = await getBookings({
+      await getBookings({
         page: page - 1, // Adjust for zero-based index
         size: sizePage,
       });
-      console.log("Bookings data fetched:", bookingsData);
+      window.scrollTo(0, 0);
     } catch (error) {
       console.error("Failed to fetch bookings:", error.message);
     }
@@ -38,11 +37,20 @@ const ManageBookings = () => {
         returnLocationId: booking.returnLocation.id,
         pickupTime: booking.pickupTime,
         returnTime: booking.returnTime,
+        customerName: booking.customerName,
+        phone: booking.phone,
         status: status,
       };
       await updateBooking(booking.id, bookingForm);
     } catch (error) {
       console.error("Failed to update booking status:", error.message);
+    }
+  };
+  const handleUpdatePaymentStatus = async (bookingId, status) => {
+    try {
+      await updatePaymentByBooking(bookingId, { paymentStatus: status });
+    } catch (error) {
+      console.error("Failed to update payment status:", error.message);
     }
   };
 
@@ -57,16 +65,6 @@ const ManageBookings = () => {
       transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
       className="px-4 pt-10 md:px-10 w-full"
     >
-      {openPayment && (
-        <div>
-          <BillForm
-            setOpenPayment={setOpenPayment}
-            setBookingsData={setBookings}
-            payment={bookings.data[0].payment}
-            userId={bookings.data[0].userId}
-          />
-        </div>
-      )}
       <Title
         title="Manage Bookings"
         subTitle="Track all customer bookings, approve or cancel requests, and manage booking statuses."
@@ -84,7 +82,9 @@ const ManageBookings = () => {
                   <th className="p-3 font-medium">Car</th>
                   <th className="p-3 font-medium">Date Range</th>
                   <th className="p-3 font-medium">Location</th>
-                  <th className="p-3 font-medium text-center">Payment</th>
+                  <th className="p-3 font-medium">Status</th>
+                  <th className="p-3 font-medium">Total</th>
+                  <th className="p-3 font-medium">Payment</th>
                   <th className="p-3 font-medium">Review</th>
                   <th className="p-3 font-medium">Actions</th>
                 </tr>
@@ -146,23 +146,6 @@ const ManageBookings = () => {
                           {booking.returnLocation.country}
                         </div>
                       </td>
-
-                      <td className="p-3 max-md:hidden">
-                        <div className="h-full flex justify-center items-center">
-                          <img
-                            onClick={() => setOpenPayment(true)}
-                            src={assets.eye_icon}
-                            alt=""
-                            className="cursor-pointer"
-                          />
-                        </div>
-                      </td>
-                      <td className="p-3 max-md:hidden ">
-                        <div className="flex items-center gap-2">
-                          <p>4</p>
-                          <img src={assets.star_icon} alt="" />
-                        </div>
-                      </td>
                       <td className="p-3">
                         <div className="flex">
                           {booking.status === "PENDING" ||
@@ -202,6 +185,64 @@ const ManageBookings = () => {
                             </span>
                           )}
                         </div>
+                      </td>
+                      <td className="p-3 max-md:hidden">
+                        <div className="">
+                          <p>
+                            {currency}
+                            {booking.payment.total}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="p-3 max-md:hidden">
+                        <div className="flex">
+                          {booking.payment.paymentStatus === "PENDING" ? (
+                            <select
+                              className="px-2 py-1.5 mt-1 text-gray-500 border border-borderColor rounded-md outline-none"
+                              defaultValue={booking.payment.paymentStatus}
+                              name=""
+                              id=""
+                              onChange={(e) => {
+                                handleUpdatePaymentStatus(
+                                  booking.id,
+                                  e.target.value
+                                );
+                              }}
+                            >
+                              <option value="PENDING">Pending</option>
+                              <option value="PAID">Paid</option>
+                              <option value="FAILED">Failed</option>
+                            </select>
+                          ) : (
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                booking.payment.paymentStatus === "PAID"
+                                  ? "bg-green-100 text-green-600"
+                                  : "bg-red-100 text-red-600"
+                              }`}
+                            >
+                              {booking.payment.paymentStatus === "PAID"
+                                ? "Paid"
+                                : "Failed"}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-3 max-md:hidden ">
+                        <div className="flex items-center gap-2">
+                          <p>4</p>
+                          <img src={assets.star_icon} alt="" />
+                        </div>
+                      </td>
+                      <td className="p-3 max-md:hidden">
+                        <img
+                          onClick={() =>
+                            navigate(`/booking-details/${booking.id}`)
+                          }
+                          src={assets.eye_icon}
+                          alt=""
+                          className="cursor-pointer"
+                        />
                       </td>
                     </motion.tr>
                   ))}

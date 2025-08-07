@@ -9,7 +9,6 @@ const Pagination = ({ currentPage, totalPages }) => {
       const searchParams = new URLSearchParams(window.location.search);
       searchParams.set("page", page);
       searchParams.set("size", import.meta.env.VITE_SIZE_PAGE);
-      // Scroll to top on page change
       navigate(`?${searchParams.toString()}`);
     }
   };

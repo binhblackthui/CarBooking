@@ -26,6 +26,10 @@ export const BookingContextProvider = ({ children }) => {
     try {
       console.log("Creating booking with data:", bookingData);
       const newBooking = await bookingService.createBooking(bookingData);
+      setBookings((prev) => ({
+        ...prev,
+        data: [...prev.data, newBooking],
+      }));
       toast.success("Booking created successfully!");
       return newBooking;
     } catch (error) {
@@ -95,6 +99,19 @@ export const BookingContextProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  const getBookingByUser = async (userId, bookingId) => {
+    setLoading(true);
+    try {
+      const booking = await userService.getBookingByUser(userId, bookingId);
+      return booking;
+    } catch (error) {
+      console.error("Failed to fetch booking by user:", error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
   const updateBooking = async (bookingId, bookingData) => {
     setLoading(true);
     try {
@@ -126,6 +143,14 @@ export const BookingContextProvider = ({ children }) => {
         bookingId,
         paymentData
       );
+      setBookings((prev) => ({
+        ...prev,
+        data: prev.data.map((booking) =>
+          booking.id === bookingId
+            ? { ...booking, payment: updatedPayment }
+            : booking
+        ),
+      }));
       toast.success("Payment updated successfully!");
       return updatedPayment;
     } catch (error) {
@@ -163,6 +188,7 @@ export const BookingContextProvider = ({ children }) => {
     totalBookingsByStatus,
     getBookings,
     getMyBookings,
+    getBookingByUser,
     setBookings,
     getBookingById,
     setLoading,

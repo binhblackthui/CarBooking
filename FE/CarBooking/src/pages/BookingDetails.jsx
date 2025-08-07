@@ -4,67 +4,49 @@ import { assets } from "../assets/assets";
 import { useContext } from "react";
 import { BookingContext } from "../contexts/BookingContext";
 import { AuthContext } from "../contexts/AuthContext";
-
 import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
+import { motion } from "motion/react";
+
 const BookingDetails = () => {
   const { id } = useParams();
   const currency = import.meta.env.VITE_CURRENCY;
+  const navigate = useNavigate();
+  const [booking, setBooking] = React.useState(null);
+  const { getBookingByUser, getBookingById } = useContext(BookingContext);
   const {
     authState: { user },
   } = useContext(AuthContext);
-  const { getBookingById, updateBooking, loading } = useContext(BookingContext);
-  const navigate = useNavigate();
-  const [booking, setBooking] = React.useState(null);
 
-  const handleConfirm = async (booking) => {
-    console.log("Confirming booking:", booking);
-    try {
-      const bookingForm = {
-        userId: user.userId,
-        carId: booking.car.id,
-        pickupLocationId: booking.pickupLocation.id,
-        returnLocationId: booking.returnLocation.id,
-        pickupTime: booking.pickupTime,
-        returnTime: booking.returnTime,
-        status: "CONFIRMED",
-      };
-      const updatedBooking = await updateBooking(booking.id, bookingForm);
-      setBooking(updatedBooking);
-    } catch (error) {
-      console.error("Error confirming booking:", error);
-    }
-  };
-  const handleCancel = async (booking) => {
-    try {
-      const bookingForm = {
-        userId: user.userId,
-        carId: booking.car.id,
-        pickupLocationId: booking.pickupLocation.id,
-        returnLocationId: booking.returnLocation.id,
-        pickupTime: booking.pickupTime,
-        returnTime: booking.returnTime,
-        status: "CANCELLED",
-      };
-      const updatedBooking = await updateBooking(booking.id, bookingForm);
-      setBooking(updatedBooking);
-    } catch (error) {
-      console.error("Error canceling booking:", error);
-    }
-  };
   useEffect(() => {
     const fetchBooking = async () => {
-      console.log("Fetching booking details for ID:", id);
-      const bookingData = await getBookingById(id);
-      console.log("Booking data fetched:", bookingData);
-      setBooking(bookingData);
+      if (!user) {
+        return;
+      }
+      try {
+        if (user.roleName === "ROLE_USER") {
+          const bookingData = await getBookingByUser(user.id, id);
+          setBooking(bookingData);
+        } else {
+          const bookingData = await getBookingById(id);
+          setBooking(bookingData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch booking details:", error);
+      }
     };
     fetchBooking();
-  }, [id]);
-  return booking == null || loading ? (
+  }, [id, user]);
+
+  return booking == null ? (
     <Loader />
   ) : (
-    <div className="py-16 max-w-7xl w-full px-4 md:px-6 mx-auto">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="py-16 max-w-7xl w-full px-4 md:px-6 mx-auto"
+    >
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 mb-6 text-gray-500 cursor-pointer"
@@ -75,8 +57,12 @@ const BookingDetails = () => {
 
       <div className="flex flex-col md:flex-row  gap-10">
         {/* Cart Info */}
-
-        <div className="flex-1">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
+          className="flex-1"
+        >
           <h1 className="text-3xl font-semibold mb-8 flex items-center gap-2">
             Booking Details{" "}
             <p
@@ -187,6 +173,10 @@ const BookingDetails = () => {
                   ", " +
                   booking.returnLocation.country,
               },
+              {
+                label: "Booked on",
+                value: booking.createdAt.split("T")[0],
+              },
             ].map((item, idx) => (
               <div key={idx} className="flex justify-between  pb-2">
                 <span>{item.label}</span>
@@ -194,35 +184,54 @@ const BookingDetails = () => {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Order Summary */}
-        <div className="w-full max-w-sm ">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
+          className="w-full max-w-sm "
+        >
           <div className=" border border-gray-300 bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-5">Order Summary</h2>
+            <h2 className="text-xl flex font-semibold mb-5  items-center gap-2">
+              Order Summary{" "}
+              <p
+                className={`px-3 py-1 text-xs rounded-full font-bold ${
+                  booking.payment.paymentStatus === "PAID"
+                    ? "bg-green-400/15 text-green-600"
+                    : booking.payment.paymentStatus === "FAILED"
+                    ? "bg-red-400/15 text-red-600"
+                    : "bg-yellow-400/15 text-yellow-600"
+                }`}
+              >
+                {" "}
+                #{booking.payment.paymentStatus}
+              </p>
+            </h2>
             <div className="space-y-4 text-sm text-gray-600">
               <div className="flex justify-between">
                 <span>Customer</span>
-                <span>Tran Thanh Binh</span>
+                <span>{booking.customerName}</span>
               </div>
               <div className="flex justify-between">
                 <span>Phone</span>
-                <span className="">0987654321</span>
+                <span className="">{booking.phone}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Created at</span>
+                <span className="">{booking.createdAt.split("T")[0]}</span>
               </div>
               <div className="flex justify-between">
-                <span>Status</span>
-                <span
-                  className={`px-3 py-1 text-xs rounded-full ${
-                    booking.payment.paymentStatus === "PAID"
-                      ? "bg-green-400/15 text-green-600"
-                      : booking.payment.paymentStatus === "CANCELLED"
-                      ? "bg-red-400/15 text-red-600"
-                      : "bg-yellow-400/15 text-yellow-600"
-                  }`}
-                >
-                  #{booking.payment.paymentStatus}
+                <span>Payment time</span>
+                <span className="">
+                  {booking.payment.paymentTime
+                    ? booking.payment.paymentTime.split("T")[0]
+                    : ""}
                 </span>
               </div>
+
               <hr className="my-4 border-gray-300" />
               <div className="flex justify-between font-semibold text-base mt-2">
                 <span className="text-2xl">Total</span>
@@ -232,42 +241,10 @@ const BookingDetails = () => {
                 </span>
               </div>
             </div>
-            {booking.status === "PENDING" && (
-              <div className="md:col-span-4 w-full flex gap-2 mt-6">
-                <button
-                  onClick={() => handleConfirm(booking)}
-                  className="w-full px-4 py-2 bg-primary hover:bg-primary-dull text-white rounded-md mr-2 cursor-pointer"
-                >
-                  Confirm
-                </button>
-                <button
-                  onClick={() => handleCancel(booking)}
-                  className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-red-600 hover:text-white cursor-pointer"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-            {booking.status === "COMPLETED" && (
-              <div className="md:col-span-4 w-full flex gap-2 mt-6">
-                <button
-                  onClick={() => handleConfirm(booking)}
-                  className="w-full px-4 py-2 border border-primary text-gray-700 hover:bg-primary  hover:text-white  rounded-md mr-2 cursor-pointer"
-                >
-                  {booking.review ? "View Review" : "Feedback"}
-                </button>
-                <button
-                  onClick={() => handleCancel(booking)}
-                  className="w-full px-4 py-2 border border-primary text-gray-700 hover:bg-primary  hover:text-white  rounded-md cursor-pointer"
-                >
-                  Reorder
-                </button>
-              </div>
-            )}
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

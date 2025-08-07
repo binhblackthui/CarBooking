@@ -33,7 +33,8 @@ export const API_ENDPOINTS = {
   // Users
   USERS: {
     GET_USER_BY_ID: (userId) => `/users/${userId}`,
-    GET_BOOKINGS_BY_USER_ID: (userId) => `/users/${userId}/bookings`,
+    GET_BOOKINGS_BY_USER: (userId) => `/users/${userId}/bookings`,
+    GET_BOOKING_BY_USER: (userId, bookingId) => `/users/${userId}/bookings/${bookingId}`,
   },
 
   // Locations

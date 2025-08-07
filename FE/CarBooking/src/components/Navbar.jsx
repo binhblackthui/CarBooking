@@ -10,7 +10,7 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const {
-    authState: { user },
+    authState: { user, authorization },
     logout,
   } = useContext(AuthContext);
 
@@ -42,12 +42,21 @@ const Navbar = () => {
           open ? "max-sm:translate-x-0" : "max-sm:-translate-x-full"
         }`}
       >
-        {menuLinks.map((link, index) => (
-          <Link key={index} to={link.path}>
-            {link.name}
-          </Link>
-        ))}
-
+        {menuLinks
+          .filter((link) => {
+            if (
+              link.path.split("?")[0] === "/my-booking" ||
+              link.name === "My Bookings"
+            ) {
+              return authorization === "ROLE_USER";
+            }
+            return true;
+          })
+          .map((link, index) => (
+            <Link key={index} to={link.path}>
+              {link.name}
+            </Link>
+          ))}
         <div
           className="hidden lg:flex items-center text-sm gap-2 border
                         border-borderColor px-3 rounded-full max-w-56"
@@ -61,14 +70,16 @@ const Navbar = () => {
           <img src={assets.search_icon} alt="search" />
         </div>
         <div className="flex max-sm:flex-col items-start sm:items-center gap-6">
-          <button
-            className="cursor-pointer"
-            onClick={() =>
-              user ? navigate("/owner") : toast.error("Please login!")
-            }
-          >
-            Dashboard
-          </button>
+          {authorization === "ROLE_ADMIN" && (
+            <button
+              className="cursor-pointer"
+              onClick={() =>
+                user ? navigate("/owner") : toast.error("Please login!")
+              }
+            >
+              Dashboard
+            </button>
+          )}
           <button
             onClick={() => {
               user ? logout() : navigate("/login");

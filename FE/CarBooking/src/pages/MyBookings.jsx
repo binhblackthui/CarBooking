@@ -19,8 +19,6 @@ const MyBookings = () => {
   const [searchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page"));
 
-  const [loading, setLoading] = React.useState(true);
-
   const fetchData = async () => {
     try {
       await getMyBookings(user.userId, {
@@ -30,8 +28,6 @@ const MyBookings = () => {
       window.scrollTo(0, 0);
     } catch (error) {
       console.error("Error fetching user bookings:", error);
-    } finally {
-      setLoading(false);
     }
   };
   const handleConfirm = async (booking) => {
@@ -75,7 +71,7 @@ const MyBookings = () => {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.6, delay: 0.5 }}
       className="px-6 md:px-16 lg:px-24 xl:px-32 2xl:px-48 mt-16 text-sm max-w-7xl"
     >
       <Title
@@ -205,6 +201,23 @@ const MyBookings = () => {
                         className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-red-600 hover:text-white cursor-pointer"
                       >
                         Cancel
+                      </button>
+                    </div>
+                  )}
+
+                  {booking.status === "COMPLETED" && (
+                    <div className="md:col-span-4 w-full flex gap-2 mt-6">
+                      <button
+                        onClick={() => handleConfirm(booking)}
+                        className="w-full px-4 py-2 border border-primary text-gray-700 hover:bg-primary  hover:text-white  rounded-md mr-2 cursor-pointer"
+                      >
+                        {booking.review ? "View Review" : "Feedback"}
+                      </button>
+                      <button
+                        onClick={() => handleCancel(booking)}
+                        className="w-full px-4 py-2 border border-primary text-gray-700 hover:bg-primary  hover:text-white  rounded-md cursor-pointer"
+                      >
+                        Reorder
                       </button>
                     </div>
                   )}
