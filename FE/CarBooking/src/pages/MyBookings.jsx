@@ -21,10 +21,11 @@ const MyBookings = () => {
 
   const fetchData = async () => {
     try {
-      await getMyBookings(user.userId, {
+      const res = await getMyBookings(user.userId, {
         page: page - 1,
         size: sizePage,
       });
+      console.log("Fetched bookings:", res);
       window.scrollTo(0, 0);
     } catch (error) {
       console.error("Error fetching user bookings:", error);

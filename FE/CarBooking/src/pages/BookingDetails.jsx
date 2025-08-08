@@ -7,6 +7,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
 import { motion } from "motion/react";
+import ReviewForm from "../components/ReviewForm";
 
 const BookingDetails = () => {
   const { id } = useParams();
@@ -27,6 +28,7 @@ const BookingDetails = () => {
         if (user.roleName === "ROLE_USER") {
           const bookingData = await getBookingByUser(user.userId, id);
           setBooking(bookingData);
+          console.log("Fetched booking by user:", bookingData);
         } else {
           const bookingData = await getBookingById(id);
           setBooking(bookingData);
@@ -242,6 +244,14 @@ const BookingDetails = () => {
               </div>
             </div>
           </div>
+          {booking.review ? (
+            <ReviewForm booking={booking} />
+          ) : (
+            user.roleName === "ROLE_USER" &&
+            booking.status === "COMPLETED" && (
+              <ReviewForm booking={booking} setBooking={setBooking} />
+            )
+          )}
         </motion.div>
       </div>
     </motion.div>

@@ -1,14 +1,17 @@
 package com.binh.carbooking.dto.response;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
+@Getter
+@Setter
 public class ReviewResponseDto {
     Long id;
     Long bookingId;
     Long carId;
-    int start;
-    String feedback;
+    int stars;
+    String comment;
     LocalDateTime createdAt;
     UserResponseDto user;
 }

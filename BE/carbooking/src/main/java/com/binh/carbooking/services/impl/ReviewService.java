@@ -39,10 +39,11 @@ public class ReviewService implements IReviewService {
             review.setBooking(bookingRepo.getById(id));
             review.setUser(userRepo.getById(dto.getUserId()));
             review.setCar(carRepo.getById(dto.getCarId()));
-            review.setStar(dto.getStar());
-            review.setFeedback(dto.getFeedback());
+            review.setStars(dto.getStars());
+            review.setComment(dto.getComment());
             review.setCreatedAt(LocalDateTime.now());
-            return modelMapper.map(reviewRepo.save(review), ReviewResponseDto.class);
+            Review saveReview = reviewRepo.save(review);
+            return modelMapper.map(saveReview,ReviewResponseDto.class);
         } catch (Exception e) {
             throw new ValidationException(e.getMessage());
         }

@@ -169,6 +169,12 @@ export const BookingContextProvider = ({ children }) => {
         bookingId,
         reviewData
       );
+      setBookings((prev) => ({
+        ...prev,
+        data: prev.data.map((booking) =>
+          booking.id === bookingId ? { ...booking, review: newReview } : booking
+        ),
+      }));
       toast.success("Review created successfully!");
       return newReview;
     } catch (error) {

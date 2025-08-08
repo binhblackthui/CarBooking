@@ -17,11 +17,11 @@ public class Review {
 
 
 
-    @Column(name = "star", nullable = false)
-    private int star;
+    @Column(name = "stars", nullable = false)
+    private int stars;
 
     @Column(nullable = false)
-    private String feedback;
+    private String comment;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

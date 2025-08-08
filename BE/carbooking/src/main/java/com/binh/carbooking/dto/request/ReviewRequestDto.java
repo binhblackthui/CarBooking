@@ -9,6 +9,6 @@ import lombok.Setter;
 public class ReviewRequestDto {
     private Long userId;
     private Long carId;
-    private int star;
-    private String feedback;
+    private int stars;
+    private String comment;
 }
